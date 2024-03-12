@@ -1,10 +1,7 @@
 # Trabajo de Fin de Grado: *Título*
 
-**Este sería el README de tu proyecto. Consulta las [instrucciones de
-instalación](INSTALL.md)
-
-### Autor(a): Nombre
-### Tutor(a)(es): Nombre(s)
+### Autor: Enrique Paubert Reca
+### Tutor: Jesús González Peñalver
 ___
 
 La documentación de este proyecto está realizada con `LaTeX`, por lo
