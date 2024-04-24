@@ -2,38 +2,144 @@
 
 % \noindent\fbox{
 % 	\parbox{\textwidth}{
-%     En este capítulo se tratará el problema que se va a intentar abordar en este trabajo, junto con una descripción del mismo, y los objetivos y restricciones para su solución.
+%     En este capítulo hablaré de el contexto actual en el que se desarrolla este projecto
 % 	}
 % }\\
-
 
 El software libre y sus licencias \cite{gplv3} ha permitido llevar a cabo una expansión del
 aprendizaje de la informática sin precedentes.
 
 \section{Descripción de la tecnología}
 \subsection{Sistemas embebidos}
-% NOTE: "sistemas informáticos" o "ordenadores"?
+% NOTE: "ordenadores" o "sistemas informáticos"?
 Cuando hablamos de ordenadores generalmente se piensa sobremesas o portátiles, y tal vez en teléfonos inteligentes, tablets o tal vez incluso servidores. A pesar de la ubicuidad de estos sistemas, muchos de los ordenadores con los que interactuamos a diario son invisibles, estan embebidos.
 
-\begin{center}\colorbox{cyan!10}{\fbox{ \begin{minipage}{11cm}
-Los \textbf{sistemas embebdidos} son combinaiones de software y hardware (opcionalmente con partes mecánicas), de proposito específico y con un número reducido y definido de funciones. Pueden ser independientes o formar parte de otro sistema. Generalmente tienen una serie de restricciones como el uso de energía y capacidad para trabajar bajo condiciones adversas. Ejemplos: Lector de tarjetas de metro o autobús, TV, router, frigorífico, TPV, la multitud de sistemas que hay en un coche...
-\end{minipage} }} \end{center}
+% \begin{center}\colorbox{cyan!10}{\fbox{ \begin{minipage}{11cm}
+Los \textbf{sistemas embebdidos} son combinaiones de software y hardware (opcionalmente con partes mecánicas), de proposito específico y con un número reducido y definido de funciones. Pueden ser independientes o formar parte de otro sistema. Generalmente tienen una serie de restricciones como el uso de energía y capacidad para trabajar bajo condiciones adversas. Ejemplos: Lector de tarjetas de metro o autobús, TV, router, frigorífico, TPV, la multitud de sistemas que hay en un coche... \cite{es_glossary} \cite{marwedel}
+% \end{minipage} }} \end{center}
 
-\begin{center}\colorbox{cyan!10}{\fbox{ \begin{minipage}{11cm}
-En cambio, los \textbf{ordenadores de propósito general} es una combinación de hardware y software diseñados para un proposito general, es decir, sin un límite establecido de funiciones. Ejemplos: PC, teléfono inteligente, servidor...
-\end{minipage} }} \end{center}
+% \begin{center}\colorbox{cyan!10}{\fbox{ \begin{minipage}{11cm}
+En cambio, los \textbf{ordenadores de propósito general} es una combinación de hardware y software diseñados para un proposito general, es decir, sin un límite establecido de funiciones. Ejemplos: PC, teléfono inteligente, servidor... \cite{es_glossary}
+% \end{minipage} }} \end{center}
 
 Dos ejemplos claros de la diferencia entre un sistema empotrado y uno de proposito general serían la Nintendo Switch y la Steam Deck. La Nintendo Switch es un sistema empotrado, una consola diseñada para jugar a videojuegos que no tiene, por ejemplo, la función de navegar por internet por motivos de seguridad. La Steam Deck es un sistema con un factor de forma similar pero es un ordenador de proposito general que no ha sido limitado por diseño, aunque su principal proposito sea el de jugar a videojuegos.
 
-\begin{center}\colorbox{yellow!10}{\fbox{ \begin{minipage}{11cm}
-Hay quien argumenta que un teléfono o una tablet es un sistema empotrado, y con respecto a los \say{dumbphones} o móviles no inteligentes es cierto dado que tienen un reducido número de funciones, pero los móviles actuales son ordenadores de propósito general y la línea entre tablet y portátil se difumina cada vez más.
-\end{minipage} }} \end{center}
+% TODO: Insertar imágenes aqui
 
-\subsection{Sistemas de Tiempo Real}
+\begin{center} \colorbox{yellow!10} { \fbox{ \begin{minipage}{11cm}
+				Hay argumentos que dicen que un teléfono o una tablet es un sistema empotrado, y con respecto a los \textit{dumbphones} o móviles no inteligentes es cierto dado que tienen un reducido número de funciones, pero los móviles actuales se pueden utilizar como ordenadores de propósito general y la línea entre tablet y portátil se difumina cada vez más.
+			\end{minipage} } } \end{center}
 
-% \usepackage{dirtytalk}
-\say{Los sistemas de tiempo real son un tipo de sistema donde el funcionamiento correcto del mismo no depende solamente de que el resultado lógico sea correcto, si no también del tiempo requerido para llegar a ese resultado.} [Stankovic, 1988].
+\subsubsection{BSPs}
+Un \textit{Board Support Package} o BSP en el contexto de los sistemas empotrados es un \textit{firmware} diseñado para un hardware concreto que proporciona una secuencia de arranque y drivers para los dispositivos de la placa, entre otras funciones.
+
+
+\subsection{Computación en Tiempo Real}
+Los sistemas de tiempo real son un tipo de sistema donde el funcionamiento correcto del mismo no depende solamente de que el resultado lógico sea correcto, sino también del tiempo requerido para llegar a ese resultado \cite{stankovic}. Esto no quiere decir necesariamente que las tareas deban tardar el mínimo tiempo posible, sino que el tiempo que se tarda en realizar una tarea debe de ser acotado, predecible y consistente.
+
+Un ejemplo de como la consistencia se valora más que la velocidad es que en muchos sistemas de tiempo real no se utiliza memoria caché, ya que a pesar de que puede acelerar la computación, los aciertos y fallos de caché son difíciles de predecir y pueden provocar inconsistencias en el tiempo de ejecución \cite{MILLIGAN1996}.
+
+La computación en tiempo real puede aplicarse tanto a ordenadores como sistemas empotrados y redes de comunicaciones. Algunos ejemplos incluyen sistemas de control de procesos, sistemas de conducción autónoma y sistemas de control de tráfico aéreo.
+
+\subsubsection{Tiempo real «duro» y «blando»}
+Cuando hablamos de sistemas de tiempo real existe la distinción entre sistemas de tiempo real «duros» (\textit{hard real time}) y «blandos» (\textit{soft real time}). \textit{Hard real time} se refiere a sistemas críticos donde una \textit{deadline} no cumplida puede tener resultados catastróficos, como puede ser en campos como la medicina o la aeroespacial. En cambio el \textit{soft real time} abarca problemas donde las \textit{deadline} no son tan estrictas y incumplirlas degradará la experiencia pero el sistema podrá seguir funcionando. Ejemplos de esto son el \textit{streaming} de elementos multimedia o la comunicación utilizando \textit{VoIP (Voice over IP)}. Mientras que el tiempo real «blando» se suele implementar dentro de otros sistemas que no requieren tiempo real, el tiempo real «duro» se implementa dentro de sistemas especialiados.
+
+Dos ejemplos que muestran esta distinción son el ABS de un coche y una videoconsola. El ABS es un sistema de tiempo real «duro» ya que si no reacciona a tiempo puede provocar una colisión. En cambio una videoconsola es un sistema de tiempo real blando, debe realizar los cálculos necesarios para cada \textit{frame} del juego a tiempo de manera que se mantenga un \textit{framerate} estable, pero si se retrasa alguno se puede seguir jugando al juego.\\
+
+Esta clasificación de «duro» y «blando» es más un espectro. Hay sistemas con mayores y menores tolerancias pero no existe una linea definida que separe claramente los sistemas de tiempo real «duros» y «blandos». Aun así la mayoría del trabajo de investigación que se realiza entorno al tiempo real se refiere a la parte del espectro que se considera tiempo real «duro».
+
+También en este espectro existen el \textit{firm real time} que se refiere a sistemas donde, si no se alcanza una \textit{deadline}, el resultado de la operacion es irrelevante. Un ejemplo es un sistema que predice el tiempo, si el cálculo de la simulación es que va a llover pero ya ha empezado a llover el resultado no sirve para nada \cite{wang2017rtes}.
+
+\subsubsection{Sistemas Operativos de Tiempo Real}
+Los sistemas de tiempo real «duro» suelen utilizar sistemas operativos especializados llamados SOs de tiempo real (\textit{RTOS} por sus siglas en inglés). La diferencia más importante de los sistemas operativos de tiempo real con respecto a los de propósito general es la planificación. estos últimos utilizan \textit{FIFO}, \textit{Round-Robin} o colas con prioridad entre otros (o una combinación de varios) para planificar las tareas que el sistema o los usuarios van creando y terminando.
+
+Los sistemas de tiempo real tienen una filosofia muy distinta, ya que el sistema va a tener un número muy reducido de funciones y tareas en comparación a un sistema operativo tradicional, pero también cada tarea tendrá un tiempo límite en el que debe completarse o \textit{deadline}. Por ello, la planificación debe calcularse en el peor caso (con el máximo número de tareas que se dará en la realidad), ya sea manualmente o con un algoritmo, para que todas las tareas terminen dentro de su \textit{deadline}.
+
+Algunos de los sitemas operativos de tiempo real más utilizados son Deos, embOS, FreeRTOS, Integrity y Keil RTX \cite{lynx2024rtos}.
+
+\subsection{Tiempo real en Sistemas Embebidos}
+% TODO:
+\textbf{\textcolor{cyan}{TODO:}} no se si hacer esta sección\\
+
+Muchos de los sistemas de tiempo real duro son implementados como sistemas embebidos\\
+
+Ejemplos...
+
+% A Closer Look In the fast-paced world of technology, embedded systems have become ubiquitous, powering devices that range from the everyday to the extraordinary. Real-Time Operating Systems (RTOS) are the unsung heroes that ensure these embedded systems meet the precise and time-sensitive demands of their applications. Let’s delve deeper into the significance of RTOS, exploring specific applications, key components, and emerging trends in the realm of embedded systems.
+%
+% # Applications
+% Automotive Systems
+% Medical Devices
+% Industrial Automation
+% Telecommunications
+%
+% # Where RTOS within embedded is mostly used? 
+% In the automotive industry, RTOS finds extensive use across a range of applications, especially for FuSa compliance
+% In the aerospace and aviation sector, RTOS is essential for real-time decision-making in various applications. 
+% In the field of medical devices, RTOS is fundamental to the operation of key devices.
+% RTOS is widely utilized in the domain of industrial automation, primarily for applications that require real-time control and monitoring
+% In industries like consumer electronics, RTOS finds widespread applications.
+%
+% # Why use RTOS
+% Maintainability/Extensibility
+% Modularity
+% Improved efficiency?
+% Easier control over peripherals -> provide a good mutual exclusion mechanism. 
+%
+% # Links
+% Real-time operating systems are the only practical solution for use in embedded systems, especially in scenarios were multiple control loops are required to behave predictably under controlled priority levels.
+% https://iies.in/blog/what-is-the-role-of-rtos-in-embedded-systems/
+% https://www.freertos.org/FAQWhat.html#WhyUseRTOS
+% https://moschip.com/blog/semiconductor/real-time-operating-systems-rtos-in-embedded-systems/
+% https://www.intervalzero.com/the-role-of-an-rtos-in-an-embedded-system/
 
 \section{Historia}
+no hay apenas historia de BSPs
+% NOTE:
+VALE vamos a hacer esto distinto. Una timeline desde los 40-50 hasta el presente y pongo hitos relevantes tanto para tiempo real como sistemas empotrados. Un color para SE, un color para RT y otro para cosas de computación en general.
+
+\subsection{Tiempo real}
+\subsection{Sistemas embebidos}
+\subsubsection{Breve historia de los microprocesadores}
+\begin{itemize}
+	\item (1950-1960) Primeros Circuitos integrados
+	      \begin{itemize}
+		      \item Invención de los circuitos integrados híbridos (Jack Kilby) y monolíticos (Robert Noyce).
+	      \end{itemize}
+	\item (1970-1980) Grandes avances en microprocesadores siguiendo la ley de Moore.
+	      \begin{itemize}
+		      \item Intel 4004, 8008, 8086...
+		      \item Apple 1
+		      \item Z80
+		      \item Motorola 68000
+	      \end{itemize}
+	\item (1990-2000) Sistemas embebidos en productos comerciales
+	      \begin{itemize}
+		      \item Arquitectura ARM6
+		      \item Java: Compilar una vez, ejecutar en multitud de dispositivos.
+	      \end{itemize}
+	\item (2010-presente) Acceso a microprocesadores facilitado por:
+	      \begin{itemize}
+		      \item Rasperry Pi
+		      \item Arduino
+		      \item IoT
+	      \end{itemize}
+\end{itemize}
+Los primeros ordenadores eran mainframes sin sistema operativo y con un número reducido de funciones.
+
+Tenían más en común con un sistema empotrado que con un ordenador moderno de propósito general
 
 \section{Aplicaciones}
+
+
+
+
+
+
+
+
+
+
+
+
+
