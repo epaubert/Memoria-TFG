@@ -1,17 +1,69 @@
 \chapter{Análisis del problema}
 
-\section{Lenguaje}
-\subsection{C}
-\subsection{C++}
-\subsection{rust}
-\subsection{zig}
-\subsection{carbon}
+En esta sección justificaré las diferentes decisiones que he tomado durante este proyecto.
 
-\section{Sistema operativo}
+\section{Placa}
+La primera elección que influirá en el resto de decisiones posteriores es la de la placa en la que se desarrollará este proyecto. Hoy en día existen multitud de placas para sistemas empotrados, desde arduinos que rondan los 20-30€ a FPGAs en los miles de euros, cada una con sus características.
+
+% FIXME: Se sale un poco de cada caja, pero suficiente de momento
+% FIXME: Comprobar y corregir datos
+% TODO: Terminar la tabla
+\begin{table}
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|}
+\hline
+\textbf{} & \textbf{MC13224V} & \textbf{Arduino Mega 2560} & \textbf{Raspberry Pi 4} & \textbf{ESP32} & \textbf{STM32F7} \\ \hline
+\textbf{CPU} & ARM7TDMI & ATmega 2560 & ARM Cortex-A72 & Xtensa LX6 & ARM Cortex-M7 \\ \hline
+\textbf{Frecuencia} & 24 MHz & 16 MHz & 1.5 GHz & 240 MHz & 216 MHz \\ \hline
+\textbf{Memoria Flash} & 128 KB & 256 KB & MicroSD (256 GB max.) & 4 MB & 2 MB \\ \hline
+\textbf{RAM} & 96 KB & 8 KB & 1-8 GB LPDDR4 & 520 KB & 512 KB \\ \hline
+\textbf{Periféricos} & GPIO, UART, SPI, I2C & GPIO, UART, SPI, I2C & GPIO, UART, SPI, I2C, HDMI, USB & GPIO, UART, SPI, I2C, DAC, ADC & GPIO, UART, SPI, I2C, DAC, ADC \\ \hline
+\textbf{Conexión} & ZigBee & -- & Ethernet, WiFi, BT & WiFi, BT & Ethernet \\ \hline
+\textbf{Consumo de Potencia} & 80 mW & 500 mW & 2.7 W (idle), 7.6 W (max) & 0.3 W (idle), 0.7 W (max) & 300 mW \\ \hline
+\textbf{Precio aprox.} & Descatalo-gada & 50€ & 50-90€ & 10€ & 500€ \\ \hline
+\end{tabularx}
+\end{table}
+
+% FIXME:
+Al elegir una placa para un sistema empotrado no necesariamente queremos la placa más potente, si no una que se ajuste a nuestras necesidades. Una placa más potente necesitará más potencia para funcionar, que en caso de que el sistema funcione con una batería será peor elección que una más eficiente si no necesitamos tanta capacidad de procesamiento.
+
+% FIXME:
+Una de estas placas es relevante ya que es la que he utilizado en las prácticas de la asignatura Sistemas Empotrados, la Redbee Econotag r3. A pesar de estar descatalogada, está disponible para retirar de la biblioteca de la Universidad de Granada, de forma que no supone un desembolso.
+
+\section{Sistemas operativos de Tiempo Real}
+\subsection{Deos (DDC-I)}
+\subsection{embOS (SEGGER)}
+\subsection{FreeRTOS (Amazon)}
+\subsection{Integrity (Green Hills Software)}
+\subsection{Keil RTX (ARM)}
 \subsection{RTIC}
 https://rtic.rs/2/book/en/
 \subsection{FreeRTOS}
 
-\section{Placa}
+% FIXME: 
+\begin{table}[]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|}
+\hline
+\textbf{Caracte-rísticas}	&  \textbf{Licencia}						& \textbf{Precio}		 &  \textbf{Tiempo Real}	& \textbf{Arquitec-turas}			& \textbf{Certifi-caciones}	& \textbf{Aplica-ciones} \\ \hline
+\textbf{Deos}			&  \cellcolor{red!33}Propieta-rio				& Precio no público		 &  Duro			& x86, ARM					& DO-178C			& Aviónica, defensa \\ \hline
+\textbf{Free-RTOS}		&  \cellcolor{green!33}Software libre (MIT)			& Gratis			 &  Blando			& ARM, AVR, PIC, x86, RISC-V, etc.		& N/A				& IoT, sistemas de control industrial \\ \hline
+\textbf{embOS}			&  \cellcolor{red!33}Propieta-rio				& Desde \$3,000			 &  Blando			& ARM, Cortex-M, RISC-V, Renesas, MSP430	& N/A				& Automati-zación industrial, equipos médicos \\ \hline
+\textbf{INTE-GRITY}		&  \cellcolor{red!33}Propieta-rio				& Precio no público		 &  Duro			& ARM, x86, PowerPC, MIPS			& DO-178B, ISO 26262		& Automo-ción, sistemas críticos \\ \hline
+\textbf{Keil RTX}		&  \cellcolor{red!33}Propieta-rio				& Incluido con Keil MDK-ARM	 &  Blando			& ARM, Cortex-M					& N/A				& IoT, sistemas embebidos \\ \hline
+\textbf{RTIC}			&  \cellcolor{green!33}Software libre (MIT /Apache 2.0)		& Gratis			 &  Blando			& ARM, Cortex-M					& N/A				& Dispositi-vos médicos, automatización industrial \\ \hline
+\end{tabularx}
+\end{table}
 
- 
+% Pequeña sección sobre esto, pero corta sección sobre esto, pero corta
+% PROBABLEMENTE ELIMINADA
+% \section{Lenguaje}
+% \subsection{C}
+% \subsection{C++}
+% \subsection{Rust}
+% \subsection{Zig}
+% \subsection{Carbon}
+% \subsection{Elección}
+
