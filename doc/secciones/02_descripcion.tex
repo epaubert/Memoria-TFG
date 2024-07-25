@@ -8,13 +8,34 @@ Además los sistemas operativos de tiempo real prediminantemente utilizados en l
 
 % En la actualidad, el uso de sistemas embebidos esta creciendo de manera exponencial en nuestra sociedad, así como la implementación de sistemas operativos de tiempo real (RTOS). Si bien estos últimos estan implementados en multitud de placas de sistemas empotrados, aún existe un gran número de placas que no tienen posibilidad de utilizar este RTOS, perdiendo la flexibilidad y la funcionalidad que estos podrian ofrecer.
 
-\section{La solución}
+\section{Solución propuesta}
 Se propone la realización de una adaptación o \textit{port} de un sistema operativo de tiempo real a una placa ARM y la realización de un programa «demo» que demuetre su funcionalidad.
 
-Con el objetivo de promover el aprendizaje sobre estos temas se priorizará el uso del software libre y componentes de bajo coste.
+% Con el objetivo de promover el aprendizaje sobre estos temas se priorizará el uso del software libre y componentes de bajo coste.
 % \begin{itemize}
 % 	\item Profundizar en el conocimiento sobre la arquitectura de los sistemas operativos, en especial los de tiempo real.
 % 	\item Profundizar en el concimiento de los sistemas embebidos
 % 	\item Profundizar en el conocimiento sobre arquitectura ARM.
 % 	\item Aprender sobre implementación de las restricciones de el tiempo real.
 % \end{itemize}
+
+\section{Restricciones}
+\begin{itemize}
+    \item \textbf{FOSS:} Se priorizará el uso de software libres y de código abierto.
+    \item \textbf{Presupuesto:} Se utilizarán componentes hardware accesibles o de bajo coste.
+    \item \textbf{Tiempo:} El tiempo límite para este projecto es la convocatoria extraordinaria de presentación de trabajos de fin de grado, en septiembre de 2024.
+\end{itemize}
+
+% TODO:
+\section{Objetivos}
+\subsection{Objetivos de Investigación}
+\begin{itemize}
+    \item \textbf{O-I.1} Investigar la estructura de FreeRTOS
+    \item \textbf{O-I.2} Investigar el funcionamiento de FreeRTOS
+\end{itemize}
+
+\subsection{Objetivos de Diseño}
+\begin{itemize}
+    \item \textbf{O-D.1} Diseñar un módulo de timer para el bsp
+    \item \textbf{O-D.2} Diseñar stack correcto para freertos
+\end{itemize}

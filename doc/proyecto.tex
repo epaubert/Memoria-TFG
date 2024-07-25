@@ -22,6 +22,7 @@
 \usepackage{tabularx}
 \usepackage{booktabs}
 \usepackage{dirtytalk}
+\usepackage{tocloft}
 
 \usepackage[table,xcdraw]{xcolor}
 \hypersetup{
@@ -49,6 +50,14 @@
 \setcounter{secnumdepth}{4}
 \usepackage[Lenny]{fncychap}
 
+% Creación de la lista de definiciones
+\newcommand{\listDefname}{Índice de definiciones}
+\newlistof{Def}{def}{\listDefname}
+\newcommand{\Def}[1]{%
+\refstepcounter{Def}
+\noindent\textbf{#1\label{Def:#1}}
+\addcontentsline{def}{Def}
+{\protect\numberline{\thechapter.\theDef}#1}}
 
 \begin{document}
 
@@ -68,6 +77,9 @@
 
 % Si hay suficientes se incluirá dicho índice
 \listoftables
+
+% Índice de definiciones
+\listofDef
 \newpage
 
 % Introducción 
