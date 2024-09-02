@@ -1,0 +1,37 @@
+Desarrollador {
+  near: center-left
+  icon: iconos/man.png
+}
+RTOS{
+  near: center-right
+  icon: iconos/man.png
+}
+# Placa{
+#   icon: iconos/man.png
+# }
+
+Tareas y sistema {
+  grid-rows: 7
+  Configurar el sistema
+  Crear una tarea
+  Configurar una tarea
+  Eliminar una tarea
+  Comunicación entre tareas
+  Medición del tiempo
+  Distribución del tiempo entre tareas
+}
+
+Desarrollador -> Tareas y sistema.Crear una tarea
+Desarrollador -> Tareas y sistema.Configurar una tarea
+Desarrollador -> Tareas y sistema.Eliminar una tarea
+Desarrollador -> Tareas y sistema.Configurar el sistema
+
+Tareas y sistema.Crear una tarea -> RTOS
+Tareas y sistema.Configurar una tarea -> RTOS
+Tareas y sistema.Eliminar una tarea -> RTOS
+Tareas y sistema.Configurar el sistema -> RTOS
+
+RTOS <-> Tareas y sistema.Comunicación entre tareas
+RTOS <-> Tareas y sistema.Medición del tiempo
+RTOS <-> Tareas y sistema.Distribución del tiempo entre tareas
+

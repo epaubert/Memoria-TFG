@@ -1,0 +1,55 @@
+Github{
+  near: top-center
+  grid-columns: 2
+  FreeRTOS/FreeRTOS -> _.FreeRTOS/
+  FreeRTOS/FreeRTOS {
+    link: https://github.com/FreeRTOS/FreeRTOS
+    shape: cloud
+  }
+  FreeRTOS/FreeRTOS-Kernel -> _.Source/
+  FreeRTOS/FreeRTOS-Kernel {
+    link: https://github.com/FreeRTOS/FreeRTOS-Kernel
+    shape: cloud
+  }
+  # FreeRTOS/FreeRTOS -> FreeRTOS/FreeRTOS-Kernel
+}
+
+FreeRTOS/ -> Demo/ -> ARM7_MC13224V_GCC/
+ARM7_MC13224V_GCC/ {
+  # near: center-left
+  grid-rows: 2
+  "main.c".shape: page
+  "FreeRTOSConfig.h".shape: page
+  "ParTest".shape: package
+  ParTest{
+    "flash.c".shape: page
+    "integer.c".shape: page
+    "ParTest.c".shape: page
+  }
+}
+
+FreeRTOS/ -> Source/ -> portable/ -> GCC/ -> ARM7_MC13224V/
+ARM7_MC13224V/ {
+  near: bottom-center
+  grid-rows: 1
+  "port.c".shape: page
+  "portmacro.c".shape: page
+  "portISR.c".shape: page
+  bsp/.shape: package
+}
+
+Source/.shape: package
+FreeRTOS/.shape: package
+Demo/.shape: package
+ARM7_MC13224V_GCC/.shape: package
+portable/.shape: package
+GCC/.shape: package
+ARM7_MC13224V/.shape: package
+
+# explanation: |md
+# Dentro de la carpeta portable/ están las carpetas de los compiladores, en nuestro caso GCC, y dentro de esas carpetas están los archivos necesarios para cada port con el
+# |{
+#
+#   near: center-left
+#
+# }
