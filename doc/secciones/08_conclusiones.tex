@@ -1,0 +1,26 @@
+\chapter{Conclusiones y trabajos futuros}
+\section{Valoración general del proyecto}
+En términos generales estoy muy satisfecho con este proyecto. En un principio pensaba que iba a ser más fácil y quería hacer una demo más compleja que explotase más las capacidades de FreeRTOS y la Econotag. Por desgracia, tras los problemas mencionados en la implementación (\autoref{ssec:Problemas}), no tuve suficiente tiempo.
+
+Si bien el uso del BSP [\ref{Def:BSP}] ha tenido muchas ventajas en este proyecto, también ha sido parte del principal problema encontrado. Sin embargo, este fallo se debió principalmente a mi falta de comprensión de FreeRTOS. Mi conclusión es que si no hubiese tenido un BSP en el que basarme, habría tenido que diseñar uno para poder configurar la placa de una manera cómoda y eficiente.
+
+\section{Trabajos futuros}
+Tras haber completado el port, sería interesante limpiar el código y modificarlo para que no sea necesario el uso del BSP con el objetivo de realizar un \emph{pull request} al repositorio oficial de FreeRTOS. De esta manera otras personas podrían realizar proyectos para la Econotag con FreeRTOS y el BSP sería una dependencia opcional.\\
+
+Otro proyecto futuro interesante sería crear un BSP para una placa más moderna y/o realizar un port de FreeRTOS a esa placa. El principal obstáculo de este posible proyecto es que la mayoría de placas modernas ya tienen un port creado por la comunidad.\\
+
+También estoy interesado en hacer más proyectos como sistemas empotrados, en concreto con placas basadas en RISC-V [\ref{Def:RISC-V}]. Gracias a esta tecnología podría diseñar un sistema en el que tanto el software como el hardware sean ĺibres y de código abierto.
+
+
+\section{Competencias y conocimientos adquiridos}
+Siento que he aprendido mucho con este proyecto. He ampliado conocimientos acerca de el funcionamiento de un procesador a nivel de código máquina, esta vez en la familia de arqutecturas de ARM [\ref{Def:ARM}]. Al trabajar a tan bajo nivel he visto algunos trucos que utilizan los compiladores y las diferencias de código dependiendo del nivel de optimización.\\
+
+También he aprendido más sobre el funcionamiento de los sistemas operativos, su interacción con el \emph{hardware} subyacente, la gestión de tareas, los guardados y restauraciones de distintos contextos. Y las restricciones que el tiempo real impone en estos sistemas. A pesar de que el procesador de la Econotag solo tiene un núcleo, al menos parte del conocimiento adquirido es extrapolable a procesadores multinúcleo.\\
+
+Además, he practicado mucho utilizando \emph{gdb} como depurador y me siento muy cómodo con esta herramienta. En mi opinión el uso de \emph{prints} tenía la ventaja de mostrar el flujo de la ejecución sin parar el programa, pero he aprendido a hacer eso mismo con este depurador. 
+
+Sumando a esto, un depurador permite ver desde dónde se ha llamado a una función, qué hay en los registros y en direcciones de memoria concretas y si las pilas se están comportando de manera correcta.
+A parte de eso, en el caso de los sistemas empotrados, mostrar por pantalla no siempre es una opción.\\
+
+Por último, he aprendido a utlizar \emph{LaTeX}. Durante la carrera había hecho uso de \emph{markdown}, que luego transformaba en en formato \emph{pdf}, para apuntes y trabajos. Y si bién es cierto que para tomar notas \emph{markdown} es más rápido e intuitivo, las herramientas de \emph{LaTeX} para documentos no tienen punto de comparación.
+

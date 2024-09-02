@@ -1,0 +1,64 @@
+\chapter{Planificación}
+
+\section{Etapas}
+
+Voy a dividir la planificación en tres etapas, aprendizaje, desarrollo y depuración. Cada una de estas fases contendrán pasos que he seguido en la implementación asociados a ellos.
+
+\subsection{Etapa 1: Aprendizaje}
+La primera fase consiste en la recopilación de información y el aprendizaje necesario para realizar el proyecto.
+
+\begin{itemize}
+\item Familiarizarse con la estructura de FreeRTOS
+\item (Re)familiarizrse con el BSP
+\end{itemize}
+
+\subsection{Etapa 2: Desarollo}
+\begin{itemize}
+\item Creación de los archivos necesarios para el port
+\item Integración del BSP
+\item Preparación de los CMakeFiles y primera compilación
+\item Ampliación del BSP
+\item Modificación de los archivos del port
+\end{itemize}
+
+\subsection{Etapa 3: Depuración}
+\begin{itemize}
+\item Demo básica
+\item Demo ampliada
+\end{itemize}
+
+\section{Temporización}
+Esta temporización supone una semana de trabajo de 20 horas. De media se realizarán cuatro horas de trabajo al día cinco días a la semana.
+
+\begin{table}[h!]
+\centering
+\begin{tabularx}{\textwidth}{|X|c|c|c|}
+\hline
+\textbf{Tarea} & \textbf{Tiempo estimado} & \textbf{Fecha inicio} & \textbf{Fecha fin} \\ \hline
+Familiarizarse con la estructura de FreeRTOS & 1 semana & 15/05/2024 & 21/05/2024 \\ \hline
+(Re)familiarizarse con el BSP & 1 semana & 29/05/2024 & 04/06/2024 \\ \hline
+Creación de los archivos necesarios para el port & 1 semana & 22/05/2024 & 28/05/2024 \\ \hline
+Integración del BSP & 1.5 semanas & 05/06/2024 & 14/06/2024 \\ \hline
+Preparación de los CMakeFiles y primera compilación & 1.5 semanas & 17/06/2024 & 26/06/2024 \\ \hline
+Ampliación del BSP & 1.5 semanas & 27/06/2024 & 08/07/2024 \\ \hline
+Modificación de los archivos del port & 1 semana & 09/07/2024 & 15/07/2024 \\ \hline
+Demo básica & 1 semana & 16/07/2024 & 22/07/2024 \\ \hline
+Demo ampliada & 1.5 semanas & 23/07/2024 & 1/08/2024 \\ \hline
+\end{tabularx}
+\caption{Plan de trabajo para el proyecto.}
+\label{tabla:plan_trabajo}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textheight, angle=270]{img/Temporización-TFG.png}
+\caption{Diagrama de Gantt de la temporización}
+\label{fig:Gantt_1}
+\end{figure}
+
+\section{Presupuesto}
+\emph{WITTENSTEIN High Integrity Systems} ofrece como servicio la realización de un port de FreeRTOS a una plataforma que no lo soporte, así que contacté con ellos para saber cual sería el presupuesto de un proyecto similar a este pero no recibí respuesta.
+
+\section{Seguimiento del desarrollo}
+
+como a día 1 de agosto no había conseguido que funcionase correctamente, pasé a trabajar en la memoria. Finalmente, la útima semana de agosto continué el trabajo en el proyecto y conseguí que funcionara

@@ -1,0 +1,46 @@
+bsp/{
+  grid-rows: 3
+
+  "bsp.mk".shape: page
+  "libbsp.a".shape: page
+  "econotag.ld".shape: page
+  "Makefile".shape: page
+
+  drivers/{
+    "gpio.c".shape: page  
+    "itc.c".shape: page
+    "timers.c".shape: page
+    "uart.c".shape: page
+  }
+
+  hal/{
+    "bsp_init.c".shape: page
+    "crt0.s".shape: page
+    "dev.c".shape: page
+    "excep_asm.s".shape: page
+    "excep.c".shape: page
+    "syscalls.c".shape: page
+  }
+
+  util/{
+    "circular_buffer.c".shape: page
+  }
+
+  include/{
+    "circular_buffer.h".shape: page
+    "dev.h".shape: page
+    "excep.h".shape: page
+    "gpio.h".shape: page
+    "itc.h".shape: page
+    "system.h".shape: page
+    "timers.h".shape: page
+    "uart.h".shape: page
+  }
+
+  drivers/.shape: package
+  hal/.shape: package
+  util/.shape: package
+  include/.shape: package
+}
+
+bsp/.shape: package

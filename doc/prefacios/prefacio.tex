@@ -1,35 +1,48 @@
 \thispagestyle{empty}
 
 \begin{center}
-	{\large\bfseries Port de un sistema operativo de tiempo real a una placa ARM \\ FreeRTOS en ARM7TDMI-S }\\
+	{\large\bfseries Port de un sistema operativo de tiempo real a una placa ARM}\\
 \end{center}
 \begin{center}
 	Enrique Paubert Reca\\
 \end{center}
 
-%\vspace{0.7cm}
+\vspace{0.7cm}
 
 \vspace{0.5cm}
-\noindent\textbf{Palabras clave}: \textit{software libre}, \textit{sistema operativo de tiempo real}, \textit{RTOS}, \textit{tiempo real}, \textit{ARM}, \textit{sistemas embebidos}
+\noindent\textbf{Palabras clave}: \textit{software libre}, \textit{sistema operativo de tiempo real}, \textit{tiempo real}, \textit{RISC}, \textit{ARM}, \textit{sistemas embebidos}, \textit{sistemas empotrados}.
 \vspace{0.7cm}
 
 \noindent\textbf{Resumen}\\
 
+El grueso de este trabajo consiste en la adaptación de un sistema operativo de tiempo real a una placa ARM de bajo coste. También se programará alguna demo con el propóstio de testear y demostrar el funcionamiento del port.\\
+
+Antes de abordar este proyecto se introducirán conceptos relevantes para entender el trabajo y se explicará el papel de los sistemas embebidos y de tiempo real en la sociedad actual. Tras ello se realizará una investigación sobre distintos RTOS [\ref{Def:RTOS}] y placas disponibles.\\
+
+Tras elegir placa y sistema operativo se procederá a la realización del port y la demo.\\
+
+% FreeRTOS en ARM7TDMI-S
 
 \cleardoublepage
 
 \begin{center}
-	{\large\bfseries Same, but in English}\\
+	{\large\bfseries Porting a real time operative system to an ARM board}\\
 \end{center}
 \begin{center}
 	Enrique Paubert Reca\\
 \end{center}
+\vspace{0.7cm}
 \vspace{0.5cm}
-\noindent\textbf{Keywords}: \textit{open source}, \textit{floss}
+\noindent\textbf{Keywords}: \textit{open source}, \textit{floss}, \textit{RTOS}, \textit{real time operative system}, \textit{RISC}, \textit{ARM}, \textit{real time}, \textit{embedded systems}.
 \vspace{0.7cm}
 
 \noindent\textbf{Abstract}\\
 
+The bulk of this proyect consists of porting a real time operative system to a low-cost ARM board. Additionaly, a demo will be created to test and demostrate the port's operation.\\
+
+Before tackling this proyect, relevant concepts will be introduced to ease the comprehension of this proyect, and the role of both embedded and real time systems in todays society will be explained. After that an investigation will be conducted on various available RTOSs [\ref{Def:RTOS}] and boards.\\
+
+Once the board and operative system are chosen, the port and demo will be carried out.\\
 
 \cleardoublepage
 
@@ -37,7 +50,7 @@
 
 \noindent\rule[-1ex]{\textwidth}{2pt}\\[4.5ex]
 
-D. \textbf{Tutora/e(s)}, Profesor del Departamento de Ingeniería de Coputadores, Automátca y Robótica.
+D. \textbf{Jesús González Peñalver}, Profesor del Departamento de Ingeniería de Coputadores, Automátca y Robótica.
 
 \vspace{0.5cm}
 
@@ -51,7 +64,7 @@ que corresponda.
 
 \vspace{0.5cm}
 
-Y para que conste, expiden y firman el presente informe en Granada a Junio de 2024.
+Y para que conste, expiden y firman el presente informe en Granada a septiembre de 2024.
 
 \vspace{1cm}
 
@@ -63,12 +76,8 @@ Y para que conste, expiden y firman el presente informe en Granada a Junio de 20
 
 \chapter*{Agradecimientos}
 
-% A mis padres, por estar ahí a pesar de todo lo que ha costado.\\
-%
-% A Juan Pedro, porque sin el no habría empezado esta carrera.\\
-%
-% A Shei, porque sin ella no la habría terminado.\\
+A mis padres, por creer en mi aún cuando mi yo creía en mi\\
 
+A Juan Pedro, porque sin el no habría empezado esta carrera.\\
 
-
-
+A Shei, porque sin ella no la habría terminado.\\

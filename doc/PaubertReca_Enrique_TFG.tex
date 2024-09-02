@@ -53,11 +53,13 @@
 % Creación de la lista de definiciones
 \newcommand{\listDefname}{Índice de definiciones}
 \newlistof{Def}{def}{\listDefname}
-\newcommand{\Def}[1]{%
+\newcommand{\Def}[1]{
 \refstepcounter{Def}
-\noindent\textbf{#1\label{Def:#1}}
+\textbf{#1\label{Def:#1}}
 \addcontentsline{def}{Def}
-{\protect\numberline{\thechapter.\theDef}#1}}
+{\protect\numberline{\theDef}#1}}
+% \Def{ejemplo} -> Declarar una definición
+% \ref{Def:ejemplo} -> Referenciar una definición
 
 \begin{document}
 
@@ -73,13 +75,14 @@
 
 % Índice de imágenes y tablas
 \newpage
+% Índice de definiciones
+\listofDef
+
+% lista de imágenes
 \listoffigures
 
 % Si hay suficientes se incluirá dicho índice
 \listoftables
-
-% Índice de definiciones
-\listofDef
 \newpage
 
 % Introducción 
@@ -93,14 +96,16 @@
 % 	2. Propuesta
 \input{secciones/03_estado_del_arte}
 
-\input{secciones/04_planificacion}
+\input{secciones/04_estudio_de_requisitos.tex}
+
+\input{secciones/05_planificacion}
 
 % Análisis del problema
 % 1. Análisis de requisitos
 % 2. Análisis de las soluciones
 % 3. Solucion propuesta
 % 4. Análisis de seguridad
-\input{secciones/05_analisis}
+\input{secciones/06_analisis}
 
 % Desarrollo bajo sprints: 
 % 	1. Permitir registros y login de usuarios
@@ -108,12 +113,12 @@
 % 	3. Desarrollo del sistema de denuncias administrativas y accidentes
 % 	4. Desarrollo del sistema de croquis
 %   5. Instalación de la aplicación de manera automática
-\input{secciones/06_implementacion}
+\input{secciones/07_implementacion}
 
 % Presupuesto
 
 % Conclusiones
-\input{secciones/07_conclusiones}
+\input{secciones/08_conclusiones}
 
 % Trabajos futuros
 
