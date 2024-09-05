@@ -1,9 +1,9 @@
-DOC := PaubertReca_Enrique_TFG.pdf
+DOC := MemoriaTFG_EnriquePaubertReca.pdf
 all: doc
 
 doc: $(DOC:.tex=.pdf)
 
-all: PaubertReca_Enrique_TFG.pdf
+all: MemoriaTFG_EnriquePaubertReca.pdf
 
 %.pdf: %.tex FORCE
 	pdflatex $< && bibtex $* && pdflatex $< && pdflatex $<

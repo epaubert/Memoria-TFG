@@ -1,27 +1,27 @@
 \chapter{Antecedentes}
 
-\noindent\fbox{
-	\parbox{\textwidth}{
-    En este capítulo hablaré del contexto actual en el que se desarrolla este projecto y daré algunas definiciones relevantes para facilitar la lectura del proyecto.
-	}
-}\\
+% \noindent\fbox{
+% 	\parbox{\textwidth}{
+%     En este capítulo hablaré del contexto actual en el que se desarrolla este projecto y daré algunas definiciones relevantes para facilitar la lectura del proyecto.
+% 	}
+% }\\
 
-El software libre y sus licencias \cite{gplv3} ha permitido llevar a cabo una expansión del aprendizaje de la informática sin precedentes.
+% El software libre y sus licencias \cite{gplv3} ha permitido llevar a cabo una expansión del aprendizaje de la informática sin precedentes.
 
 \section{Sistemas embebidos}
 % NOTE: "ordenadores" o "sistemas informáticos"?
-Cuando hablamos de ordenadores generalmente se piensa en computadores de sobremesa u  ordenadores portátiles, teléfonos inteligentes, tablets o incluso servidores. A pesar de la ubicuidad de estos sistemas, muchos de los sistemas informáticos con los que interactuamos a diario son invisibles, pues están embebidos.
+Cuando hablamos de ordenadores generalmente se piensa en computadores de sobremesa u  ordenadores portátiles, teléfonos inteligentes, tabletas o incluso servidores. A pesar de la ubicuidad de estos sistemas, muchos de los sistemas informáticos con los que interactuamos a diario son invisibles, pues están embebidos.
 
 % \begin{center}\colorbox{cyan!10}{\fbox{ \begin{minipage}{11cm}
-    Los Sistemas embebidos o empotrados, que abreviaré como \Def{SE}, son combinaciones de software y hardware (opcionalmente con partes mecánicas), de propósito específico y con un número reducido y definido de funciones. Pueden ser independientes o formar parte de otro sistema. Generalmente tienen una serie de restricciones como el uso de energía y capacidad para trabajar bajo condiciones adversas. Algunos ejemplos podrían ser el lector de tarjetas de metro o autobús, TV, router, frigorífico, TPV, la multitud de sistemas que hay en un coche... \cite{es_glossary} \cite{marwedel}
+    Los Sistemas embebidos o empotrados, que abreviaré como \Def{SE}, son combinaciones de \emph{software} y \emph{hardware} (opcionalmente con partes mecánicas), de propósito específico y con un número reducido y definido de funciones. Pueden ser independientes o formar parte de otro sistema. Generalmente tienen una serie de restricciones como el uso de energía y capacidad para trabajar bajo condiciones adversas. Algunos ejemplos podrían ser el lector de tarjetas de metro o autobús, TV, \emph{router}, frigorífico, TPV, la multitud de sistemas que hay en un coche... \cite{es_glossary} \cite{marwedel}
 % \end{minipage} }} \end{center}
 
 % \begin{center}\colorbox{cyan!10}{\fbox{ \begin{minipage}{11cm}
-En cambio, los \textbf{ordenadores de propósito general} son una combinación de hardware y software diseñados para, valga la redundancia, un propósito general, es decir, sin un límite establecido de funciones. \cite{es_glossary}\\
+    En cambio, los \textbf{ordenadores de propósito general} son una combinación de \emph{hardware} y \emph{software} diseñados para, valga la redundancia, un propósito general, es decir, sin un límite establecido de funciones. \cite{es_glossary}\\
 % \end{minipage} }} \end{center}
 
-Dos ejemplos claros de la diferencia entre un sistema empotrado y uno de propósito general serían la Nintendo Switch y la Steam Deck. La Nintendo Switch es un sistema empotrado, una consola diseñada para jugar a videojuegos que no tiene, por ejemplo, la función de navegar por internet por motivos de seguridad. 
-A pesar de su similaridad estética con la Switch, la Steam Deck, por contra, se podría considerar un ordenador de propósito general ya que, aunque su principal función es la ejecución de juegos, tiene todo un sistema /textit{Linux-Based} accesible por el usuario.
+Dos ejemplos claros de la diferencia entre un sistema empotrado y uno de propósito general serían la Nintendo Switch y la Steam Deck. La Nintendo Switch es un sistema empotrado, una consola diseñada para jugar a videojuegos que no tiene, por ejemplo, la función de navegar por Internet por motivos de seguridad. 
+A pesar de su similaridad estética con la Switch, la Steam Deck, por contra, se podría considerar un ordenador de propósito general ya que, aunque su principal función es la ejecución de juegos, tiene todo un sistema \textit{Linux-Based} accesible por el usuario.
 
 
 %La Steam Deck, por contra, es un sistema con un factor de forma similar pero es un ordenador de proposito general que no ha sido limitado por diseño, aunque su principal proposito sea el de jugar a videojuegos.
@@ -40,9 +40,9 @@ A pesar de su similaridad estética con la Switch, la Steam Deck, por contra, se
 En el centro de todo sistema empotrado hay un microprocesador, pero para hablar más en detalle de los microprocesadores primero debemos hablar de las ISAs.
 
 \subsection{ISA}
-Una arquitectura de conjunto de instrucciones, \Def{ISA} por sus siglas en inglés (Instruction Set Arquitecture), es una especificación formal que define las instrucciones que puede ejecutar un procesador y como influirán el el hardware. Abarca tanto la codificación, los tipos y longitud de datos, los registros disponibles y su formato, los modos de ejecución y los modos de acceso a memoria. Algunas ISAs consisten de un núcleo al que se le pueden añadir extensiones dependiendo de las capacidades que queremos que tenga el microprocesador.\\
+Una arquitectura de conjunto de instrucciones, \Def{ISA} por sus siglas en inglés (Instruction Set Arquitecture), es una especificación formal que define las instrucciones que puede ejecutar un procesador y como influirán el el \emph{hardware}. Abarca tanto la codificación, los tipos y longitud de datos, los registros disponibles y su formato, los modos de ejecución y los modos de acceso a memoria. Algunas ISAs consisten de un núcleo al que se le pueden añadir extensiones dependiendo de las capacidades que queremos que tenga el microprocesador.\\
 
-En la actualidad hay dos enfoques en el desarrollo de ISAs. Estos son CISC y RISC. Si bién la inmensa mayoría de los sistemas embebidos utilizan arquitecturas RISC, también veremos las características de CISC para tener más contexto.
+En la actualidad hay dos enfoques en el desarrollo de ISAs. Estos son CISC y RISC. Si bien la inmensa mayoría de los sistemas embebidos utilizan arquitecturas RISC, también veremos las características de CISC para tener más contexto.
 
 % FIXME:
 \subsection{CISC}
@@ -65,19 +65,19 @@ Un computador con un conjunto de instrucciones reducido \Def{RISC}, por sus sigl
     \item Todas las instrucciones tienen la misma longitud
     \item Sólo las instrucciones de carga y almacenamiento acceden a la memoria.
 \end{itemize}
-Estas características minimizan la fase de decodificación de la instrucción y hacen que que el procesador esté menos tiempo decodificando instrucciones y más tiempo ejecutandolas. Otro beneficio es que permite la creación de procesadores de menor tamaño y más eficientes, lo que los hace ideales para SEs [\ref{Def:SE}]. 
+Estas características minimizan la fase de decodificación de la instrucción y hacen que el procesador esté menos tiempo decodificando instrucciones y más tiempo ejecutándolas. Otro beneficio es que permite la creación de procesadores de menor tamaño y más eficientes, lo que los hace ideales para SEs [\ref{Def:SE}]. 
 
 La familia de arquitecturas RISC más extendida es ARM, aunque también se está popularizado el uso de RISC-V.
 
 \subsection{ARM}
 ARM se refiere tanto a la familia de arquitecturas como a la empresa que las diseña.
 
-\Def{ARM} es una familia de arquitecturas RISC cuya primera versión (ARMv1) fue lanzada en 1985 y la más moderna (ARMv9) fué lanzada en 2021. Son ampliamente utilizadas en smartphones, tablets, sistemas embebidos y más recientemente en ordenadores portátiles como algunos Chromebooks, Apple Silicon y los portátiles Windows con procesadores Snapdragon X [referenciar].\\
+\Def{ARM} es una familia de arquitecturas RISC cuya primera versión (ARMv1) fue lanzada en 1985 y la más moderna (ARMv9) fué lanzada en 2021. Son ampliamente utilizadas en \emph{smartphones}, tabletas, sistemas embebidos y más recientemente en ordenadores portátiles como algunos Chromebooks, Apple Silicon y los portátiles Windows con procesadores Snapdragon X.\\
 
-La empresa Arm Holdings plc no fabrica los procesadores, sino que se dedica a licenciar tanto la arquitectura para que otras empresas diseñen procesadores (Apple Silicon), como los diseños de procesadores creados por la propia empresa(Procesadores Snapdragon de Qualcomm). También proporcionan herramientas de desarrollo de software para sus procesadores.
+La empresa Arm Holdings plc no fabrica los procesadores, sino que se dedica a licenciar tanto la arquitectura para que otras empresas diseñen procesadores (Apple Silicon), como los diseños de procesadores creados por la propia empresa(Procesadores Snapdragon de Qualcomm). También proporcionan herramientas de desarrollo de \emph{software} para sus procesadores.
 
 \subsection{RISC-V}
-Dada la relevancia de el software libre en el contexto de este trabajo es importante destacar la ISA [\ref{Def:ISA}] \Def{RISC-V}. Es una arquitectura RISC de hardware libre, es decir, cuyo diseño es accesible, modificable y comercializable sin necesidad de licencia.
+Dada la relevancia del \emph{software} libre en el contexto de este trabajo es importante destacar la ISA [\ref{Def:ISA}] \Def{RISC-V}. Es una arquitectura RISC de \emph{hardware} libre, es decir, cuyo diseño es accesible, modificable y comercializable sin necesidad de licencia.
 
 Comenzó como un proyecto de la Universidad de Berkley (California) en 2010 y hoy en día es usado ampliamente utilizado en la industria. La fundación que supervisa el proyecto es apoyada por empresas como AMD, Nvidia, Oracle, Google y Qualcom. \cite{RISC-V_BOOK}
 
@@ -88,12 +88,14 @@ Entrada y salida de propósito general, \Def{GPIO} por sus siglas en inglés \em
 \subsection{UART}
 \emph{Universal Asynchronous Receiver-Transmitter} por sus siglas en inglés, \Def{UART} es un protocolo de comunicación por cable que se usa entre dos computadores, generalmente un circuito integrado y un ordenador. \cite{UART_BIB}
 
-%TODO:
 \subsection{HAL}
-Capa de abstracción de hardware o \emph{Hardware Abstraction Layer} en inglés, un \Def{HAL} es una capa de código que conecta el \emph{software} que hay por encima con el \emph{hardware} que hay justo debajo. Cada HAL es específica a un \emph{hardware} concreto pero permite al desarrollador del \emph{software} abstraerse del hardware. \cite{Yoo2003}
+Capa de abstracción de \emph{hardware} o \emph{Hardware Abstraction Layer} en inglés, un \Def{HAL} es una capa de código que conecta el \emph{software} que hay por encima con el \emph{hardware} que hay justo debajo. Cada HAL es específica a un \emph{hardware} concreto pero permite al desarrollador del \emph{software} abstraerse del \emph{hardware}. \cite{Yoo2003}
+
+\subsection{Driver}
+Un manejador o \Def{driver} es un \emph{software} que actúa de intermediario entre un \emph{hardware} específico y un \emph{software} o un sistema operativo para que se pueda hacer un uso eficiente y seguro de ese \emph{hardware}.
 
 \subsection{BSP}
-Un Board Support Package o \Def{BSP} en el contexto de los sistemas embebidos es un \emph{firmware} que actua como una interfaz estándar entre un hardware concreto y un kernel o programa que corre sobre el. Proporciona una secuencia de arranque y drivers para los dispositivos de la placa, entre otras funciones.\cite{fredericksfaq}\\
+Un Board Support Package o \Def{BSP} en el contexto de los sistemas embebidos es un \emph{firmware} que actúa como una interfaz estándar entre un \emph{hardware} concreto y un kérnel o programa que corre sobre él. Proporciona una secuencia de arranque y \emph{drivers} para los dispositivos de la placa, entre otras funciones.\cite{fredericksfaq}\\
 
 \section{Computación en Tiempo Real}
 Los sistemas de \Def{Tiempo Real} son un tipo de sistema donde el funcionamiento correcto del mismo no depende solamente de que el resultado lógico sea correcto, sino también del tiempo requerido para llegar a ese resultado \cite{stankovic}. Esto no quiere decir necesariamente que las tareas deban tardar el mínimo tiempo posible, sino que el tiempo que se tarda en realizar una tarea debe de estar acotado, ser predecible y consistente.
@@ -112,14 +114,14 @@ Cuando hablamos de sistemas de tiempo real existe la distinción entre sistemas 
 
 Esta clasificación de «duro» y «blando» no es estricta, sino que es más un espectro. Existen sistemas con mayores y menores tolerancias, pero no existe una linea definida que separe claramente los sistemas de tiempo real «duros» y «blandos». Aun así la mayoría del trabajo de investigación que se realiza en torno al tiempo real se refiere a la parte del espectro que se considera tiempo real «duro».
 
-También en este espectro existe el \emph{firm real time} que se refiere a sistemas donde, si no se alcanza una \emph{deadline} [\ref{Def:Deadlines}], el resultado de la operacion es irrelevante. Un ejemplo es un sistema que predice el tiempo, si el cálculo de la simulación es que va a llover pero ya ha empezado a llover el resultado no sirve para nada \cite{wang2017rtes}.
+También en este espectro existe el \emph{firm real time} que se refiere a sistemas donde, si no se alcanza una \emph{deadline} [\ref{Def:Deadlines}], el resultado de la operación es irrelevante. Un ejemplo es un sistema que predice el tiempo, si el cálculo de la simulación es que va a llover pero ya ha empezado a llover el resultado no sirve para nada \cite{wang2017rtes}.
 
 \subsection{Sistemas Operativos de Tiempo Real}
 Los sistemas de tiempo real «duro» suelen utilizar sistemas operativos especializados llamados sistemas operativos de tiempo real, \Def{RTOS} por sus siglas en inglés (Real Time Operative System).
-%FIXME:
+
 La diferencia más importante de los sistemas operativos de tiempo real con respecto a los de propósito general es la planificación. Estos últimos utilizan \emph{FIFO}, \emph{Round-Robin} o colas con prioridad entre otros (o una combinación de varios) para planificar las tareas que el sistema o los usuarios van creando y terminando.
 
-Los sistemas de tiempo real tienen una filosofia muy distinta, ya que el sistema va a tener un número muy reducido de funciones y tareas en comparación a un sistema operativo tradicional, pero también cada tarea tendrá un tiempo límite en el que debe completarse o \emph{deadline} [\ref{Def:Deadlines}]. Por ello, la planificación debe calcularse en el peor caso (con el máximo número de tareas que se dará en la realidad), ya sea manualmente o con un algoritmo, para que todas las tareas terminen dentro de su \emph{deadline} [\ref{Def:Deadlines}].
+Los sistemas de tiempo real tienen una filosofía muy distinta, ya que el sistema va a tener un número muy reducido de funciones y tareas en comparación a un sistema operativo tradicional, pero también cada tarea tendrá un tiempo límite en el que debe completarse o \emph{deadline} [\ref{Def:Deadlines}]. Por ello, la planificación debe calcularse en el peor caso (con el máximo número de tareas que se dará en la realidad), ya sea manualmente o con un algoritmo, para que todas las tareas terminen dentro de su \emph{deadline} [\ref{Def:Deadlines}].
 
 Algunos de los sistemas operativos de tiempo real más utilizados son Deos, embOS, FreeRTOS, Integrity y Keil RTX \cite{lynx2024rtos}.
 
@@ -130,9 +132,9 @@ El Computador de Navegación del Apollo, AGC por sus siglas en inglés Apollo Gu
 
 Otro ejemplo más moderno, además de obras de ingeniería tan impresionantes en la automoción o aeroespacial, es un monitor de bebés  utilizando Keil RTX para comunicar una cámara y un monitor \cite{LLLBabyMonitor}.\\
 
-%FIXME:
-FIXME:
-Hoy en día la inmensa mayoría de los RTOSs [\ref{Def:RTOS}] se usan en sistemas embebidos [\ref{Def:SE}]...
-
-bla bla bla el diagrama de Venn es casi un círculo bla bla bla...
+% %FIXME:
+% FIXME:
+% Hoy en día la inmensa mayoría de los RTOSs [\ref{Def:RTOS}] se usan en sistemas embebidos [\ref{Def:SE}]...
+%
+% bla bla bla el diagrama de Venn es casi un círculo bla bla bla...
 

@@ -23,6 +23,7 @@
 \usepackage{booktabs}
 \usepackage{dirtytalk}
 \usepackage{tocloft}
+\usepackage[toc,page]{appendix}
 
 \usepackage[table,xcdraw]{xcolor}
 \hypersetup{
@@ -51,7 +52,7 @@
 \usepackage[Lenny]{fncychap}
 
 % Creación de la lista de definiciones
-\newcommand{\listDefname}{Índice de definiciones}
+\newcommand{\listDefname}{}
 \newlistof{Def}{def}{\listDefname}
 \newcommand{\Def}[1]{
 \refstepcounter{Def}
@@ -75,8 +76,6 @@
 
 % Índice de imágenes y tablas
 \newpage
-% Índice de definiciones
-\listofDef
 
 % lista de imágenes
 \listoffigures
@@ -92,8 +91,7 @@
 \input{secciones/02_descripcion}
 
 % Estado del arte
-% 	1. Crítica al estado del arte
-% 	2. Propuesta
+% 	1. Crítica al estado del arte 2. Propuesta
 \input{secciones/03_estado_del_arte}
 
 \input{secciones/04_estudio_de_requisitos.tex}
@@ -120,13 +118,21 @@
 % Conclusiones
 \input{secciones/08_conclusiones}
 
-% Trabajos futuros
 
-
-
+% Bibliografía
 \newpage
 \bibliography{bibliografia}
 \bibliographystyle{plain}
+\newpage
+
+% Apéndices
+\begin{appendices}
+\chapter{Glosario}
+% Índice de definiciones
+\listofDef
+
+\input{secciones/09_apéndices}
+\end{appendices}
 
 \end{document}
 

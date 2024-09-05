@@ -1,37 +1,45 @@
 Desarrollador {
-  near: center-left
+  # near: center-left
   icon: iconos/man.png
+  style.stroke: white
+  # shape: circle
+  # width: 125
 }
-RTOS{
-  near: center-right
-  icon: iconos/man.png
-}
+
+
+# RTOS{
+#   near: center-right
+#   icon: iconos/man.png
+# }
 # Placa{
 #   icon: iconos/man.png
 # }
 
-Tareas y sistema {
-  grid-rows: 7
-  Configurar el sistema
-  Crear una tarea
-  Configurar una tarea
-  Eliminar una tarea
-  Comunicación entre tareas
-  Medición del tiempo
-  Distribución del tiempo entre tareas
+Port de FreeRTOS {
+  grid-rows: 5
+  Configurar el sistema.shape: oval
+  Diseñar una tarea.shape: oval
+  # Configurar una tarea.shape: oval
+  Crear una instancia de una tarea.shape: oval
+  Eliminar una instancia de una tarea.shape: oval
+  # Comunicación entre tareas
+  # Medición del tiempo
+  # Distribución del tiempo entre tareas
+
+  _.Desarrollador -> Configurar el sistema
+  _.Desarrollador -> Diseñar una tarea
+  # _.Desarrollador -> Configurar una tarea
+  _.Desarrollador -> Crear una instancia de una tarea
+  _.Desarrollador -> Eliminar una instancia de una tarea
 }
 
-Desarrollador -> Tareas y sistema.Crear una tarea
-Desarrollador -> Tareas y sistema.Configurar una tarea
-Desarrollador -> Tareas y sistema.Eliminar una tarea
-Desarrollador -> Tareas y sistema.Configurar el sistema
 
-Tareas y sistema.Crear una tarea -> RTOS
-Tareas y sistema.Configurar una tarea -> RTOS
-Tareas y sistema.Eliminar una tarea -> RTOS
-Tareas y sistema.Configurar el sistema -> RTOS
-
-RTOS <-> Tareas y sistema.Comunicación entre tareas
-RTOS <-> Tareas y sistema.Medición del tiempo
-RTOS <-> Tareas y sistema.Distribución del tiempo entre tareas
+# Tareas y sistema.Crear una tarea -> RTOS
+# Tareas y sistema.Configurar una tarea -> RTOS
+# Tareas y sistema.Eliminar una tarea -> RTOS
+# Tareas y sistema.Configurar el sistema -> RTOS
+#
+# RTOS <-> Tareas y sistema.Comunicación entre tareas
+# RTOS <-> Tareas y sistema.Medición del tiempo
+# RTOS <-> Tareas y sistema.Distribución del tiempo entre tareas
 

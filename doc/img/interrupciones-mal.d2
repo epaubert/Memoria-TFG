@@ -1,0 +1,135 @@
+vars: {
+  gap: 40
+  colorFlechas: "#888888"
+  FontSize: 40
+}
+
+classes: {
+  invisible: {
+    style.opacity: 0
+    label: a
+    width: 140
+  }
+
+  TAREA: {
+    # width: 196
+    style.stroke: "#009fff"
+    style.font-color: "#009fff"
+    # style.fill: "#83d0ff"
+    style.font-size: ${FontSize}
+  }
+  FREERTOS: {
+    style.stroke: "#038000"
+    style.font-color: "#038000"
+    # style.fill: "#79b578"
+    style.font-size: ${FontSize}
+  }
+  BSP:{
+    style.stroke: "#7852A1"
+    style.font-color: "#7852A1"
+    # style.fill: "#79b578"
+    style.font-size: ${FontSize}
+  }
+  PLACA:{
+    # width: 102
+    style.stroke: "#733c16"
+    style.font-color: "#733c16"
+    # style.fill: "#79b578"
+    style.font-size: ${FontSize}
+  }
+  FLECHA:{
+    style.stroke: ${colorFlechas}
+    style.stroke-width: 8
+  }
+}
+
+grid-gap: ${gap}
+grid-rows: 2
+
+Tarea{
+  class: TAREA
+  near: top-right
+  width: 400
+  height: 400
+  style.font-size: 50
+}
+
+FreeRTOS{
+  class: FREERTOS
+  direction: up
+  near: bottom-right
+  label.near: bottom-center
+
+  Guardado de contexto.class: FREERTOS
+  Restauración de contexto.class: FREERTOS
+  vTickISR: "Función de los ticks"{
+    class: FREERTOS
+  }
+  vPortYieldProcessor: "Cambio de tarea"{
+    class: FREERTOS
+  }
+  Guardado de contexto -> vTickISR -> Restauración de contexto: {class:FLECHA}
+
+  Guardado de contexto -> vPortYieldProcessor -> Restauración de contexto: {class:FLECHA}
+}
+
+BSP{
+  class: BSP
+  direction: down
+  near: bottom-left
+  # label.near: bottom-center
+
+  Vector de interrupciones.class: BSP
+  Manejador de IRQ{
+    class: BSP
+    # label.near: bottom-center
+    grid-rows:2
+    Guardado de contexto.class: BSP
+    Restauración de contexto.class: BSP
+  }
+  Manejador de SWI{
+    class: BSP
+    # label.near: bottom-center
+    grid-rows:2
+    Guardado de contexto.class: BSP
+    Restauración de contexto.class: BSP
+  }
+  Vector de interrupciones -> Manejador de IRQ : {class:FLECHA}
+  Vector de interrupciones ->  Manejador de SWI : {class:FLECHA}
+
+} 
+
+Econotag:{
+  class: PLACA
+  near: top-left
+  # direction: right
+  grid-columns: 2
+  Temporizador: {
+    # near: center-left
+    class: PLACA
+  }
+  Procesador.class: PLACA
+  Procesador{
+    grid-rows:2
+    grid-gap:80
+    # label.near: bottom-center
+    Abortar ejecución.class: PLACA
+    Abortar ejecución <- Excepción: si no es manejable : {
+      class:FLECHA
+    }
+
+    Excepción.class: PLACA
+
+  }
+  Temporizador -> Procesador.Excepción : IRQ {class:FLECHA}
+
+}
+
+Econotag.Procesador.Excepción -> BSP.Vector de Interrupciones: si es manejable : {class:FLECHA}
+
+FreeRTOS.Restauración de contexto -> Tarea: {class:FLECHA}
+Tarea -> Econotag.Procesador.Excepción: SWI : {class:FLECHA}
+
+BSP.Manejador de IRQ.Guardado de contexto -> FreeRTOS.Guardado de contexto: {class:FLECHA}
+BSP.Manejador de SWI.Guardado de contexto -> FreeRTOS.Guardado de contexto: {class:FLECHA}
+

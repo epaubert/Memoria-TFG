@@ -1,0 +1,105 @@
+classes: {
+  invisible: {
+    style.opacity: 0
+    label: a
+    width: 140
+  }
+
+  Tarea: {
+    width: 196
+    style.stroke: "#009fff"
+    style.font-color: "#009fff"
+    # style.fill: "#83d0ff"
+  }
+  FREERTOS: {
+    style.stroke: "#038000"
+    style.font-color: "#038000"
+    # style.fill: "#79b578"
+  }
+  BSP:{
+    style.stroke: "#7852A1"
+    style.font-color: "#7852A1"
+    # style.fill: "#79b578"
+  }
+  PLACA:{
+    width: 102
+    style.stroke: "#733c16"
+    style.font-color: "#733c16"
+    # style.fill: "#79b578"
+  }
+}
+
+vars: {
+  gap: 40
+  colorFlechas: "#666666"
+}
+
+grid-gap: ${gap}
+grid-rows: 4
+
+
+Tareas {
+  grid-gap: ${gap}
+  grid-columns: 3
+  # grid-rows: 1
+
+  LED Rojo.class: Tarea
+  LED verde.class: Tarea
+  Fibonacci.class: Tarea
+  class: Tarea
+}
+
+Tareas.LED Rojo <-> FreeRTOS : {style.stroke:  ${colorFlechas}}
+Tareas.LED verde <-> FreeRTOS : {style.stroke: ${colorFlechas}}
+Tareas.Fibonacci <-> FreeRTOS : {style.stroke: ${colorFlechas}}
+
+FreeRTOS {
+  grid-gap: ${gap}
+  grid-rows: 2
+  class: FREERTOS
+
+  Gestor de tareas.class: FREERTOS
+  Colas.class: FREERTOS
+  Eventos.class: FREERTOS
+  otros: "..."
+  otros.class: FREERTOS
+  Kernel.width: 666
+  Kernel.class: FREERTOS
+}
+
+FreeRTOS.Kernel <-> BSP: {style.stroke: ${colorFlechas}}
+
+BSP {
+  grid-gap: ${gap}
+  grid-rows: 1
+  HAL.class: BSP
+  Drivers{
+    GPIO.class: BSP
+    UART.class: BSP
+    Timer.class: BSP
+    ITC.class: BSP
+    class: BSP
+  }
+
+  HAL <-> Drivers : {style.stroke: ${colorFlechas}}
+
+  class: BSP
+}
+
+Econotag {
+  grid-gap: ${gap}
+  grid-rows: 1
+  CPU.class: PLACA
+  GPIO.class: PLACA
+  UART.class: PLACA
+  Timer.class: PLACA
+  ITC.class: PLACA
+
+  label.near: bottom-center
+  class: PLACA
+}
+
+BSP.Drivers.GPIO <-> Econotag.GPIO: {style.stroke: ${colorFlechas}}
+BSP.Drivers.UART <-> Econotag.UART: {style.stroke: ${colorFlechas}}
+BSP.Drivers.Timer <-> Econotag.Timer: {style.stroke: ${colorFlechas}}
+BSP.Drivers.ITC <-> Econotag.ITC: {style.stroke: ${colorFlechas}}

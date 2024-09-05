@@ -1,0 +1,397 @@
+\chapter{Implementación detallada}
+\label{chap:Implementación}
+% La implementación del \emph{software} se ha dividido en hitos. Estos, han sido definidos en Github
+% y cada uno de ellos contiene un grupo de \emph{issues} que se corresponden con las distintas
+% mejoras que se han ido incorporando al \emph{software} a lo largo de su desarrollo.\\
+
+% Al inicio del proyecto tenía:
+% \begin{itemize}
+%     \item Una placa Redwire Econotag r3.
+%     \item Un BSP para la Econotag.
+%     \item Un repositorio de github para el kérnel de FreeRTOS.
+%     \item Un repositorio de github para el resto de FreeRTOS.
+% \end{itemize}
+
+\section{Paso 1: Familiarizarse con la estructura de FreeRTOS}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\textwidth]{img/carpetasFreeRTOS.png}
+\caption{Estructura de los directorios y archivos de FreeRTOS}
+\label{fig:DirsFreeRTOS}
+\end{figure}
+
+FreeRTOS está dividido en varios repositorios de Github que forman submódulos, pero para este proyecto solo hay dos relevantes: el repositorio principal \href{https://github.com/FreeRTOS/FreeRTOS}{FreeRTOS/FreeRTOS} y el kérnel que contiene los ports \href{https://github.com/FreeRTOS/FreeRTOS-kernel}{FreeRTOS/FreeRTOS-kernel}.
+
+Dentro del repositorio principal existen los directorios \emph{FreeRTOS}, \emph{FreeRTOS-Plus} y \emph{tools}.
+\emph{FreeRTOS-Plus} contiene código para extensiones de FreeRTOS y \emph{tools} herramientas para trabajar con AWS y cmock.
+Por lo tanto este proyecto solo hará uso del directorio \emph{FreeRTOS}.
+
+Este directorio contiene otros cuatro directorios.
+No utilizaremos \emph{License} ni \emph{Test}, para la licencia y test del código del kérnel.
+Los otros dos, \emph{Demo} y \emph{Source}, contienen código para demos y el kérnel respectivamente.
+
+En el directorio \emph{Demo} contiene directorios con demos específicas para ports con el patrón \emph{[ARQUITECTURA]\_[PORT]\_[COMPILADOR]}. Además encontramos el directorio \emph{Common} que incluye a su vez directorios con cabeceras y archivos con código común entre demos.\\
+
+El repositorio del kérnel se encuentra en \path{FreeRTOS/Source} con respecto al repositorio principal.
+Aquí se encuentran múltiples archivos \emph{.c} que componen el código del kérnel y el \emph{CMakeLists.txt} que creará los archivos de compilación del kérnel.
+En términos de directorios están \emph{include} con cabeceras del kérnel, \emph{examples} con archivos plantilla para iniciar un proyecto y \emph{portable} donde se encuentra el código específico para cada port.\\
+
+Dento del directorio \emph{portable} podemos encontrar un \emph{CMakeLists.txt} interno de FreeRTOS y varios directorios.
+\emph{MemMang} contiene los archivos que definen como se implementará la gestión de memoria, \emph{template} archivos plantilla para ports y \emph{Common} envoltorios para MPUs (Memory Protection Units).
+
+El resto de los directorios de \emph{portable} tienen el nombre de compiladores usados para los ports.
+La ruta de cada port sigue el patrón \path{[COMPILADOR]/[ARQUITECTURA]_[PORT]}.
+En nuestro caso utilizaremos el compilador gcc y por tanto el directorio \emph{GCC} por varias razones.
+Es el compilador que más ports tiene, tiene varios ports a la arquitectura objetivo (ARM7) y es con el que más familiarizado estoy ya que lo he utilizado a lo largo de la carrera.
+
+La figura \ref{fig:DirsFreeRTOS} muestra un diagrama de los directorios y los archivos utilizados.
+
+\section{Paso 2: Creación de los archivos necesarios para el port}
+El primer paso fue crear un fork en Github de ambos repositorios que utilizaremos de FreeRTOS. Tras clonar el repositiorio principal, modifiqué el archivo \emph{.gitmodules} y utilicé el comando \emph{git submodules sync} para que el submódulo \emph{Source/} apuntase a mi fork del kérnel. Finalmente inicialicé el submódulo del kérnel.
+
+En resumen, esta fué la serie de comandos para clonar y inicializar los repositorios:
+\begin{lstlisting}[language=bash]
+$ git clone git@github.com:epaubert/FreeRTOS-TFG.git
+$ cd FreeRTOS-TFG/
+$ sed -i \
+'s/FreeRTOS\/FreeRTOS-kernel/epaubert\/FreeRTOS-kernel-TFG/'\
+.gitmodules
+$ git submodule sync
+$ git submodule init FreeRTOS/Source/
+$ git submodule update FreeRTOS/Source/
+\end{lstlisting}
+
+En siguiente lugar creé los directorios \path{FreeRTOS/Source/portable/GCC/ARM7_MC13224V/} y \path{FreeRTOS/Demo/ARM7_MC13224V_GCC/} que contendrán el código necesario para el port y la demo respectivamente. Posteriormente copié los archivos \path{FreeRTOS/Source/portable/GCC/ARM7_LPC2000/{port.c,portISR.c,portmacro.h}} a \path{FreeRTOS/Source/portable/GCC/ARM7_MC13224V/}.
+
+Elegí basarme en el port \emph{ARM7\_LPC2000} porque es una familia de placas que tiene el mismo procesador que la MC13224V (ARM7TDMI-S) y solo tenía esos tres archivos, mientras que otros como el port \emph{ARM7\_AT91SAM7S} tiene otros archivos específicos del \emph{hardware}.\\
+
+Una vez preparados los archivos en los que me basaré para el port, pasé a la demo y la compilación del proyecto. Copié \path{FreeRTOS/Source/examples/cmake_example/main.c} y \path{FreeRTOS/Source/examples/template_configuration/FreeRTOSConfig.h} al directorio de la demo para tener un archivo que, aunque incompleto, que pudiese compilar y una configuración por defecto de FreeRTOS. Luego copié \path{FreeRTOS/Source/examples/cmake_example/CMakeLists.txt} al directorio base \path{FreeRTOS}.\\
+
+A partir de aquí, el lugar de poner todos las rutas de los directorios y los archivos, voy a referirme a los directorios de la siguiente manera: % \label{base} \label{port} \label{demo} 
+\begin{itemize}
+    \item Directorio base de FreeRTOS: \path{FreeRTOS/}
+    \item Directorio del port: \path{FreeRTOS/Source/portable/GCC/ARM7_MC13224V/}
+    \item Directorio del BSP: \path{FreeRTOS/Source/portable/GCC/ARM7_MC13224V/bsp/}
+    \item Directorio de la demo: \path{FreeRTOS/Demo/ARM7_MC13224V_GCC/}
+\end{itemize}
+
+% Ver también la imagen \ref{fig:DirsFreeRTOS}.
+
+\section{Paso 3: (Re)familiarizarse con el BSP}
+%TODO: Mover esto a una sección anterior
+En las prácticas de la asignatura de Sistemas Empotrados se desarrolla un BSP [\ref{Def:BSP}] para la Redwire Econotag r3, una placa de desarrollo de la MC13224V. Este BSP proporciona una HAL [\ref{Def:HAL}] y \emph{drivers} que simplifica la configuración y utilización del \emph{hardware} específico de la placa.
+
+Entre los archivos del bsp destacan \emph{crt0.s}, que proporciona una secuencia de arranque, y \emph{econotag.ld}, un \emph{linker script} para que el programa se cargue en la dirección de memoria apropiada y que controla el tamaño de las distintas pilas.
+También incluye \emph{drivers} para la la configuración y el uso de el GPIO [\ref{Def:GPIO}], las excepciones e interrupciones y la UART [\ref{Def:UART}].
+
+\section{Paso 4: Integración del BSP}
+\label{chap:IntegraciónBSP}
+
+Antes de empezar a modificar el port de FreeRTOS, decidí integrar el BSP dentro del port para poder utilizar las herramientas que ya implementadas en el BSP tanto en el port como en la demo.
+
+FreeRTOS utiliza una serie de \emph{CMakeLists.txt} para su compilación así que decidí sustituir el \emph{Makefile} del BSP por un \emph{CMakeLists.txt} y así poder incluir la compilación del BSP más organicamente en el port.\\
+
+Dado que vamos a compilar a una plataforma distinta a en la que estamos programando, necesitaremos una cadena de herramientas o \emph{toolchain} apropiada. Las \emph{toolchain} se identifican con una tripleta de destino del tipo [ARQUITECTURA]-[FABRICANTE]-[SISTEMA OPERATIVO]. A pesar de llamarse tripleta o \emph{target triplet} en inglés, puede tener entre dos y cuatro campos. Esto se debe a que el fabricante muchas veces se omite y que el sistema operativo puede dividirse en dos para especificar una ABI.\\
+
+Resulta relevante explicar el concepto de \Def{ABI}. Una \emph{Aplication Binary Interface} define como interactuarán distintos binarios a nivel de código máquina. Se basa en una ISA [\ref{Def:ISA}] y define, los tipos y tamaños básicos, el alineamiento de la memoria y las convenciones de llamada entre otras cosas.
+Por ejemplo si, desde un programa queremos llamar a una librería o hacer una llamada al sistema, lo haremos según una ABI.\\
+
+En este caso vamos a compilar para ARM, sin tener un sistema operativo de base y para un sistema embebido. Por lo tanto utilizaremos el toolchain \emph{arm-none-eabi}. También utilizaremos la opción \emph{-mcpu=arm7tdmi} que identifica el procesador específico para el que estamos compilando. Además definiremos las variables \emph{CMAKE\_SYSTEM\_NAME} y \emph{CMAKE\_SYSTEM\_PROCESSOR} como ``Generic'' y ``arm7tdmi'' respectivamente para que \emph{cmake} sepa que estamos realizando una compilación cruzada a ese procesador.\\
+
+% -mfpu=softfp ??
+
+En mi caso también definiré la variable \emph{BIN} como \path{/run/current-system/sw/bin/} para indicarle a \emph{cmake} dónde encontrar los binarios, ya que estoy utilizando la distribución de Linux \emph{NixOS} como sistema operativo y tiene una estructura inusual.\\
+
+Un último paso importante es modificar el archivo de arranque (\emph{crt0.s}) para que se llame a la función main en modo supervisor. Esto es necesario para que FreeRTOS se inicie correctamente. Tras comprobar que compilaba y ejecutaba correctamente los test, copié el BSP a la carpeta del port.
+
+\section{Paso 5: Preparación de los CMakeFiles y primera compilación}
+FreeRTOS utiliza una serie de \emph{CMakeLists.txt} que se dedican a crear los archivos de compilación del kérnel. Al ser un port nuevo, necesitaremos un \emph{CMakeLists.txt} con las instrucciones para compilar nuestro port. Además utilizaremos uno en el directorio base de FreeRTOS de momento que compile la demo utilizando nuestro port.\\
+
+Empezando por el \emph{CMakeLists.txt} del port, definimos las variables comentadas en el apartado anterior e incluimos el directorio del BSP.
+Debemos llamar al proyecto \emph{freertos\_kernel\_port} para que sea coherente con los archivos de compilación de FreeRTOS.
+Luego indicamos que el código fuente se encuentra en los archivos \path{port.c} y \path{portISR.c}.
+Las cabeceras que necesitamos están en este mismo directorio (\path{portmacro.h}), en el directorio de cabeceras de BSP y en el directorio de la demo (\emph{FreeRTOSConfig.h}).
+No es necesario incluir el directorio \path{FreeRTOS/Source/include/} ya que se incluyen en los archivos de compilación de FreeRTOS.
+\href{https://github.com/epaubert/FreeRTOS-kérnel-TFG/blob/4748471870b78355a33cddd2345bfabb41335613/portable/GCC/ARM7_MC13224V/CMakeLists.txt}{CMakeLists.txt del port}.\\
+
+El \emph{CMakeLists} de la demo lo situé en el directorio base de FreeRTOS por comodidad, basandome en el archivo \path{FreeRTOS/Source/examples/cmake_example/CMakeLists.txt}. Además de lo comentado anteriormente sobre la \emph{toolchain} y las opciones de compilador, aquí hay que definir la variable \emph{FREERTOS\_PORT} como \emph{A\_CUSTOM\_PORT}.
+
+En este momento es importante añadir dos \emph{flags} al enlazador. Una es \emph{-nostartfiles}, ya que queremos que el programa empiece desde la función \emph{\_start} definida en el archivo \emph{crt0.s} del BSP. La otra es \emph{-T} indicando el linker script, que será el \emph{econotag.ld} definido en el BSP. Esto definirá el punto por donde empezará el programa y el tamaño de la RAM, las pilas y el \emph{heap} principalmente.
+
+Ahora añadimos el directorio del port, indicamos que el ejecutable se construye a partir del \emph{main.c} del directorio de la demo y que las cabeceras necesarias estarán en el directorio del BSP y en \path{FreeRTOS/Demo/Common/include}.
+\href{https://github.com/epaubert/FreeRTOS-TFG/blob/main/FreeRTOS/CMakeLists.txt}{CMakeLists.txt de la demo}.\\
+
+Si intentamos compilar en este punto el compilador se quejará de que hay variables en los archivos \emph{port.c} y \emph{portISR.c} (del directorio del port) no definidas. Estas son variables específicas del port en el que nos estamos basando, así que comentaremos esas líneas y más tarde las adaptaremos.\\
+
+Una vez conseguida la compilación, ejecuté la demo con una tarea que debía de hacer parpadear un LED. En lugar de eso, siguiendo la ejecución con \emph{gdb}, el programa se quedaba colgado en un bucle infinito al final de la función \emph{main}. Este bucle se incluye en los sistemas embebidos para que el contador de programa no avance hasta llegar a memoria indefinida. Esto significaba que la función \emph{vTaskStartScheduler} retornaba, cosa que no debe ocurrir normalmente pero esperaba que ocurriera ya que faltaban por completar algunos requerimientos de FreeRTOS.
+
+\subsection{Problemas encontrados}
+Mis principales guías en estos archivos fueron los de ejemplo de FreeRTOS y el \emph{Makefile} original del BSP para las opciones de compilación. Si bien ahora presento estos pasos ordenados, conseguir la primera compilación fue a base de prueba y error que me llevó varios días. He trabajado con \emph{cmake} en algunas asignaturas de la carrera, nunca había creado uno yo, por lo que tuve que aprender.
+
+En concreto mis mayores problemas fueron que el compilador no encontraba el BSP y que no encontraba el modo de modificar los \emph{flags} del enlazador.
+La documentación de FreeRTOS en este aspecto deja bastante que desear.\\
+
+Otro tema que llevó bastante tiempo fue la preocupación por el espacio. La Econotag tiene 96KB de RAM y 128KB de memoria flash. Dado que la escritura a la memoria flash la degrada y es una placa que tiene bastantes años, en la asignatura de Sistemas Empotrados me indicaron que evitase escribir a ella. Por lo tanto se sube el programa a la RAM y se ejecuta desde ahí. Al terminar la compilación vi que el tamaño del archivo era bastante superior a los 96KB, al rededor de los 120KB. 
+
+Los procesadores ARM tienen un modo de ejecución llamado \emph{THUMB} en el que las instrucciones pasan de ocupar 32 bits a 16, aunque siguen pudiendo trabajar con datos de 32 bits. Con el objetivo de reducir el tamaño del binario, utilicé las opciones de compilación \emph{-mthumb} y \emph{-mthumb-interwork} para compilar el código a \emph{THUMB}. El fallo que recibía es que las funciones que trabajan con interrupciones y excepciones no pueden compilarse a \emph{THUMB}, por lo que tuve que añadir \emph{ \_\_attribute\_\_((target(``arm'')))} a las funciones del archivo \emph{excep.c} del BSP. Aun así la compilación en \emph{THUMB} me daba otros problemas.
+
+Más tarde descubrí con el comando \emph{arm-none-eabi-objcopy} que el binario real que se mandaba a la RAM era bastante menor en tamaño de lo que creía (unos 23KB) y no necesitaba utilizar \emph{THUMB}. El exceso de tamaño se debía a datos de depuración principalmente.
+
+\section{Paso 6: Ampliación del BSP}
+FreeRTOS requiere de interrupciones periódicas para medir el tiempo transcurrido. Estas tipicamente son a 1000, 100 o 10 Hz dependiendo de lo duro que necesitemos que sea el tiempo real.
+
+La Econotag posee 4 temporizadores que se pueden configurar para que realicen interrupciones ya sea una vez o periódicamente dependiendo de nuestras necesidades. El BSP diseñado en la asignatura de Sistemas Empotrados no incluye unos \emph{drivers} para estos temporizadores, así que decidí ampliarlo incluir esta funcionalidad.\\
+
+%TODO: Pasar los links a bibliografía
+En un principio basándome en el manual de referencia \href{https://www.nxp.com/docs/en/reference-manual/MC1322xRM.pdf}{MC1322xRM.pdf} y más tarde en el repositorio \href{https://github.com/malvira/libmc1322x}{malvira/libmc1322x} de Github conseguí unos \emph{drivers} funcionales que permitian la configuración de interrupciones periódicas.
+
+Esta ampliación está recogida en los archivos \path{bsp/drivers/timers.c} y \path{bsp/include/timers.h}. Quiero destacar el \emph{struct tmr\_regs\_t} que, dada la dirección de memoria de los registros de un \emph{timer}, permite el acceso por campos a toda la configuración del mismo. Ver \autoref{chap:Código}. También la función \emph{timer\_setup\_irq} que dados un \emph{timer} y unos hercios, configura el \emph{timer} recibido para que realice interrupciones a los hercios deseados.
+
+Para terminar la configuración de los temporizadores añadí un \emph{include} del archivo \emph{timers.h} a \emph{system.h}, que es el archivo del BSP que incluye todas las cabeceras.\\
+
+También configuré el uso de interrupciones anidadas gracias a un archivo que me proporcionó mi tutor, ya que estaba teniendo problemas con las interrupciones periódicas del FreeRTOS.
+\href{https://github.com/epaubert/FreeRTOS-kérnel-TFG/tree/main/portable/GCC/ARM7_MC13224V/bsp}{El resultado final del BSP es este}.
+
+\section{Paso 7: Modificación de los archivos del port}
+Es el momento de modificar los tres archivos del directorio del port, \emph{port.c}, \emph{portISR.c} y \emph{portmacro.h}, para que sean adecuados para nuestra placa. Además de explicaré las funciones más destacables que contienen.
+
+%TODO: Pasar los links a bibliografía
+Según los \href{https://forums.freertos.org/t/new-port-attempted-is-hanging-rowley-xstudio/3337/2}{foros de FreeRTOS}, todos los ports a ARM7 y ARM9 son iguales, lo único que cambia es la forma de generar interrupciones periódicas y la configuración del vector de interrupciones. Por lo tanto me baso en el port a LPC2000 y realizaré los mínimos cambios posibles.
+
+Por comodidad voy a referirme a LPC2000 como una placa aunque en realidad sea una familia de placas. De hecho debería de renombrar mi port \emph{ARM7\_MC1322x} o similar ya que este port debería de ser compatible con esa familia de placas, pero como es la única la que tengo acceso y la que puedo probar, mantendré ese nombre.\\
+
+El BSP facilita la configuración de interrupciones y gracias a la ampliación realizada en el apartado anterior tenemos una forma fácil de configurar las interrupciones periódicas. Nos situamos en el directorio del port y vamos a ver los cambios por archivos.
+
+\subsection{portmacro.h}
+En este archivo se definen macros en ensamblador como el guardado y restauración de contexto, además de definir los tipos que usará FreeRTOS, la dirección de crecimineto de la pila, el alineamiento de los bits etc. También tiene algunas definiciones para compilar a \emph{THUMB} que no utilizaremos en este proyecto pero no las eliminaremos en caso de que sean útiles para proyectos futuros. No es necesario modificar este archivo.
+
+Acabé añadiendo el \emph{include} el archivo \emph{system.h} del BSP que contiene las cabeceras de todas las funciones del BSP. Esto me permite acceder a esas definiciones desde el resto de archivos del port. También definí \emph{TICK\_TIMER} como 0, ya que utilizaría el \emph{timer\_0} del BSP y dos macros (\emph{str(s)} y \emph{xstr(s)}) que me permiten expandir la definición de \emph{TICK\_TIMER} en ensamblador.
+
+\subsection{portISR.c}
+Este archivo contiene funciones que solo pueden ser compiladas a \emph{ARM} dado que trabajan con interrupciones. Si bien podríamos integrar este archivo dentro de \emph{port.c} para nuestro proyecto ya que no vamos a compilar a \emph{THUMB}, dificultaría la modificación en el futuro y no es necesario. De este archivo eliminé algunas definiciones específicas que trataban con la configuración del \emph{timer} de la LPC2000 al no ser necesarias.
+
+Dos funciones de este archivo esenciales para FreeRTOS son \emph{vTickISR} y \emph{vPortYieldProcessor}. Ambas funciones están definidas con el atributo \emph{naked}, lo que significa que el compilador no incluye código de preludio no epílogo, es decir, el guardado y la restauración del contexto automáticos. Otra restricción del atributo \emph{naked} es que el comportamiento del código C no está definido y se recomienda utilizar sólo código en ensamblador.
+
+Estas funciones hacen uso de las macros \emph{portSAVE\_CONTEXT} al inicio y \emph{portRESTORE\_CONTEXT} al final, ambas definidas en \emph{portmacro.h}, para el guardado y la restauración del contexto de las tareas que interrumpirán.
+
+\subsubsection{vTickISR}
+La función \emph{vTickISR} será llamada en cada interrupción periódica. Llamará a la función que incrementa el contador de ticks de FreeRTOS y, si es preciso, llamará a otra función para cambiar de tarea. Luego debe desactivar la interrupción del temporizador. En nuestro caso es necesario modificar esta desactivación de la interrupción con funciones del BSP, pero debemos llamarlas desde ensamblador usando la instrucción \emph{bl}, mnemónico de \emph{branch and link}.
+
+En un principio llamaba a \emph{getIntTmr} para saber qué temporizador estaba realizando la interrupción y posteriormente a \emph{clearInt} para desactivar la interrupción. Más tarde sustituí el salto a \emph{getIntTmr} por un movimiento del valor inmediato de \emph{TICK\_TIMER} definido en \emph{portmacro.h} a \emph{r0}, ya que es el registro que contiene el primer argumento de una llamada a función. Con esto elimino un salto a función de una tarea que se va a ejecutar múltiples veces por segundo, lo cual debería de mejorar la eficiencia del sistema.
+
+\subsubsection{vPortYieldProcessor}
+No es necesario modificar nada de \emph{vPortYieldProcessor} pero considero importante explicar su labor. Es la función que se llamará al realizar una interrupción por \emph{software} o \emph{SWI}. Este es el mecanismo que utiliza FreeRTOS para que una tarea pueda ``liberar'' el núcleo en el que se está ejecutando para que otra tarea pueda utilizarlo.
+
+En la función en sí, antes de guardar el contexto se le suma 4 al \emph{LR}, \emph{Link Register} o registro de enlace en español. Este es el registro que guarda la dirección de memoria a la que se tiene que regresar después de un salto. Normalmente cuando se produce una petición de interrupción el \emph{LR} tiene un \emph{offset} sobre el valor de retorno verdadero, ya que el puntero de programa o \emph{PC} está apuntando a la siguiente instrucción. Dado que en esta interrupción por \emph{software} no tiene ese \emph{offset}, tenemos que añadirlo nosotros manualmente. De esta manera podemos usar el mismo mecanismo de retorno para ambos casos.
+
+\subsubsection{vPortEnterCritical y vPortExitCritical}
+Estas dos últimas funciones son utilizadas por FreeRTOS para crear secciones de código críticas, es decir, que no pueden ser interrumpidas por, valga la redundancia, interrupciones. El BSP contiene dos funciones similares pero estas tienen una ventaja. Un contador global que permite que, en el caso de secciones críticas anidadas, no se reactiven las interrupciones hasta que no se haya salido de la primera sección crítica donde se entró.
+
+\subsection{port.c}
+Este es el archivo que recibirá el mayor número de cambios. Recoge las funciones del port que podrían compilarse a \emph{THUMB} si así lo quisiéramos. 
+
+\subsubsection{prvSetupTimerInterrupt}
+Aquí configuraremos el temporizador de las interrupciones periódicas. Para empezar, haremos que \emph{vTickISR} sea el manejador de interrupciones de los temporizadores. Luego inicializamos el temporizador con la función \emph{timer\_setup\_irq}. Utilizo la constante \emph{configTICK\_RATE\_HZ}, definida en \emph{FreeRTOSConfig.h} en el directorio de la demo, para que FreeRTOS pueda calcular los milisegundos por tick.\\
+
+Más tarde conseguí que las interrupciones del temporizador utilizaran FIQ en lugar de IRQ. IRQ o \emph{Interrupt ReQuest} se refiere a las interrupciones normales, mientras que FIQ o \emph{Fast Interrupt reQuest} se refiere a las interrupciones rápidas. Estas se gestionan de manera diferente y utilizan un conjunto de registros específico, lo que evita guardar registros en la pila y aumenta la velocidad.
+
+Esta configuración se consigue a través de la función del BSP \emph{itc\_set\_priority}. Tuve que aumentar el tamaño de la pila de las interrupciones FIQ en el \emph{linker script} ya que se producían fallos extraños debido a que sobrescribía otras pilas.
+
+\subsubsection{xPortStartScheduler}
+En esta función se realizan los preparativos específicos del port para que empiece el gestor de tareas de FreeRTOS. Primero configuro las \emph{SWI} para que llamen a \emph{vPortYieldProcessor}. En segundo lugar llamo a \emph{prvSetupTimerInterrupt} para iniciar el temporizador. Por último llamo a \emph{vPortISRStartFirstTask}, una función del archivo \emph{portISR.c} que inicia el gestor de tareas.
+
+\subsubsection{Otras funciones}
+En este archivo también se incluyen pxPortInitialiseStack, que inicializa la pila de FreeRTOS, y \emph{vPortEndScheduler}, una función vacía ya que no está previsto que el gestor de tareas termine. No han sido modificadas.
+
+\section{Paso 8: Demo básica}
+Para probar el port empecé con el ``Hola Mundo'' de los sistemas embebidos: hacer parpadear un LED. La Econotag dispone de dos LEDs integrados, uno rojo y uno verde, por lo que creé las funciones vBlinkRed y vBlinkGreen, que se ejecutarían como las dos tareas BlinkRed y BlinkGreen. Empecé lanzando solo una de las dos tareas y cuando funcionaba consistentemente añadí la segunda.
+
+Estas funciones consisten en un bucle infinito en el que se alterna el encendido y apagado de un LED y luego se llama a la función \emph{vTaskDelay} de FreeRTOS para esperar los \emph{ticks} deseados. Más tarde añadí una llamada a la función \emph{print\_str} que permite mandar un \emph{string} a la UART [\ref{Def:UART}] para mostrar por pantalla que LED estaba alternando.\\
+
+% TODO: hablar de FreeRTOSConfig.h
+
+Durante las pruebas de esta demo tuve numerosos problemas. Al principio no funcionaba y avanzando con \emph{gdb} descubrí que FreeRTOS no tenía suficiente RAM, asi que la aumenté de 4096 a 16384 bytes en el archivo \emph{FreeRTOSConfig.h}. Luego funcionaba pero al cabo de un poco de tiempo dejaba de hacerlo. Al añadir las salidas de texto por la UART [\ref{Def:UART}] vi que se estaba corrompiendo la memoria así que aumenté el tamaño de las pilas en el \emph{linker script}. Otro problema fue que no había definido correctamente el manejador de las interrupciones por \emph{software}.
+
+Llegó un momento en el que, intentando optimizar el código, dejó de funcionar hasta que cambié el nivel de optimización.
+
+\subsection{Depurando con gdb y OpenOCD}
+La econotag incorpora una interfaz JTAG que permite realizar depuración en chip utilizando \emph{gdb} y OpenOCD. Gracias a esto se puede seguir la ejecución de la demo a pesar de estar ejecutándose en la placa y no en nuestro ordenador.
+
+Pero para un sistema de tiempo real, parar la ejecución en un punto para ver qué está pasando en el procesador va en contra de la propia naturaleza del sistema. Después de investigar descubrí que \emph{gdb} permite ejecutar comandos automáticamente una vez se llega a un \emph{breakpoint} utilizando la palabra clave \emph{commands}. Esto me permitió crear un script que ponía un \emph{breakpoint} en distintas funciones y cuando llegaba a ese punto, continuar la ejecución con el mínimo retraso posible. Este \emph{script} utilizaba varias estructuras de este tipo:
+
+\begin{verbatim}
+break xTaskIncrementTick
+commands
+    print xTickCount
+    info registers cpsr spsr_irq spsr_svc lr lr_irq lr_svc
+    continue
+end
+\end{verbatim}
+
+Estos comandos crean un \emph{breakpoint} en la función xTaskIncrementTick, que es la función que aumenta los \emph{ticks} de FreeRTOS. Al llegar al \emph{breakpoint}, se imprime la variable que contiene los \emph{ticks} hasta el momento, se imprimen algunos registros de control y de enlace y se continua la ejecución.
+
+El \emph{script}, que se puede encontrar en este \href{https://github.com/epaubert/FreeRTOS-TFG/blob/main/FreeRTOS/Demo/ARM7_MC13224V_GCC/break.gdb}{enlace}, contiene muchas de estas estructuras, lo que me permite ver qué está pasando dentro de la placa introduciendo los mínimos retrasos posibles.\\
+
+Con estas herramientas he conseguido que se ejecute la demo correctamente, pero de forma inconsistente. Si intento ejecutar la demo sin lanzar \emph{gdb} para supervisar la ejecución, no funciona. Es más, solo funciona si algunas funciones concretas tienen un \emph{breakpoint}. Y los ticks de FreeRTOS no pueden estar a más de 4 hercios. Al parecer necesita ciertos retrasos para sincronizarse correctamente. Esto unido a que aún con \emph{gdb} solo funciona en ciertos niveles de optimización, no siendo la optimización para depurar \emph{-Og} una de ellas, dificulta mucho el arreglo de este problema. 
+
+Debido a estos problemas, empecé a fijarme en otras demos de FreeRTOS para ver si estaba haciendo algo mal en la demo o era problema del port.
+
+\section{Paso 9: Demo ampliada}
+Esta demo está inspirada en la demo que se encuentra en \path{FreeRTOS/Demo/ARM7\_LPC2106\_GCC/}, que utiliza los archivos comunes entre demos. Estos archivos comunes tiene algunas definiciones generales que no encajan con mi placa. Por ejemplo, el archivo \path{FreeRTOS/Demo/Common/Minimal/flash.c} utiliza 3 LEDs, pero en la Econotag en principio solo dispongo de 2, así que los copié y modifiqué.\\
+
+Creé la carpeta \emph{ParTest/} dentro del directorio de la demo y copié a ella los archivos \path{FreeRTOS/Demo/ARM7\_LPC2106\_GCC/ParTest/ParTest.c} y \path{FreeRTOS/Demo/Common/Minimal/flash.c}.
+
+\subsection{ParTest}
+El archivo \emph{ParTest.c} contiene tres funciones. La primera, \emph{vParTestInitialise}, inicializa el \emph{hardware} que utilizaremos. La segunda, \emph{vParTestSetLED}, recibe un LED y un estado y pone el LED en el estado indicado. La tercera, \emph{vParTestToggleLED}, recibe un LED y alterna su estado.
+Modifiqué estas tres funciones para que  con el \emph{hardware} de la Econotag.\\
+
+\subsection{Flash}
+El otro archivo, \emph{flash.c}, se usa para crear tareas que hacen parpadear LEDs. Reduje el número de LEDs de 3 a 2. Luego modifiqué la variable del LED para que se ajustase a lo que espera el BSP de la Econotag.
+Por último añadí algo más de código, principalmente para que se mostrase por pantalla qué tarea se estaba creando para ayudar con la depuración.\\
+
+\subsection{Fibonacci}
+Inspirado por el archivo \path{FreeRTOS/Demo/Common/Minimal/integer.c}, que me parecía poco interesante, creé una tarea para calcular la sucesión de Fibonnaci y mostrarla por pantalla.
+
+Para empezar, no tenía una forma de imprimir enteros por pantalla, así que creé la función \emph{print\_int} que recibe un entero, lo convierte en una cadena de caracteres y lo imprime por pantalla.
+
+Luego creé la función que actuaría como tarea, \emph{vFibonacciTask}. Esta tiene dos variables inicializadas a 0 y 1, que contendrán los dós últimos valores. Deben de estar declaradas como estáticas (\emph{static}) ya que van a realizarse cambios de contexto y si no perderíamos los valores.
+
+El grueso de la función es un bucle infinito que consta de dos partes. La primera imprime el último valor calculado y realiza una espera devolviendo el control a FreeRTOS. La segunda calcula el siguiente valor, ajusta las variables y realiza una espera devolviendo el control al sistema. Parte del ajuste de las variables es el reiniciarlas una vez se ha llegado a un valor muy grande para evitar un \emph{overflow}.\\
+
+Dividí la función en estos dos pasos ya que el transformar el dato e imprimirlo es relativamente costoso computacionalmente y no quería que esta función acaparase demasiado control del procesador. Para devolver el control al sistema utilizo la función \emph{vTaskDelayUntill} y para la espera utilizo el valor actual de la secuencia de Fibonacci en milisegundos. Esto hace que cada vez la espera sea más larga.\\
+
+\subsection{Problemas}
+\label{ssec:Problemas}
+Tras mucho investigar, he descubierto que el port tiene un desbordamiento de pila. Según la función \emph{vApplicationStackOverflowHook}, que sirve para detectar los desbordamientos, la provoca la tarea \emph{IDLE}. Ésta es la tarea que se ejecuta cuando no se están ejecutando otras tareas. Por eso estaba teniendo tantos problemas con la demo original y por eso el programa funciona durante más tiempo cuando lo lanzo con \emph{gdb} que sin el. Al estar comunicándose con \emph{gdb}, está mucho menos tiempo en la tarea inactiva y tarda más en producirse el desbordamiento.\\
+
+La forma de hacer este descubrimiento ha sido la siguiente. FreeRTOS tiene una definición opcional llamada \emph{configCHECK\_FOR\_STACK\_OVERFLOW}. Esto hace que se llame a la función \emph{vApplicationStackOverflowHook} cuando se detecta un desbordamiento. El segundo argumento de esta función es \emph{char *pcTaskName}, una cadena de caracteres con el nombre de la tarea causante del desbordamiento. En \emph{gdb}, una vez llego al \emph{breakpoint} de esta función, utilizo el comando \emph{x/5c \$r1}. Esto imprime cinco caracteres a partir de la dirección de memoria guardada en el registro \emph{r1}, que es el que contiene el segundo argumento. La salida de este comando es \emph{0x407694:       73 'I'  68 'D'  76 'L'  69 'E'  0 '\textbackslash000'}, por lo que la causante es la tarea \emph{IDLE}.\\
+
+Para solucionar este problema fui aumentando \emph{configMINIMAL\_STACK\_SIZE}, que define el tamaño de pila por defecto de una tarea de FreeRTOS. Empezando por 128, multiplicando por 2 cada vez, hasta eliminar el desbordamiento. Al alcanzar 512, deja de saltar el gancho de los desbordamientos, pero sigue ocurriendo una excepción indefinida.
+
+Ejecutando con \emph{gdb} y haciendo que imprimiese los punteros de pila, vi que el \emph{sp\_fiq} estaba disminuyendo poco a poco, hasta que saltaba una excepción indefinida. Tras poner \emph{breakpoints} con comandos automáticos que mostraran \emph{sp\_fiq}
+en \emph{excep\_nonnested\_fiq\_handler\_asm}, \emph{itc\_service\_fast\_interrupt} y \emph{vTickISR}, vi que el puntero de pila iba avanzando en las dos primeras funciones sin liberarse. Después de un par de días investigando y razonando, recordé que FreeRTOS no está pensado para necesitar un BSP, sino que es una ayuda para configurar el sistema.
+
+El problema radicaba en que al ocurrir una interrupción rápida, el BSP estaba configurado para llamar a \emph{excep\_nonnested\_fiq\_handler\_asm}, que guardaba el contexto y llamaba a \emph{itc\_service\_fast\_interrupt}, que servía la interrupción llamando a \emph{vTickISR}. Pero \emph{vTickISR} ya tiene código para el guardado y restauración de contexto. En vez de regresar a las otras dos funciones, devolvía el control al sistema operativo y se entraba en una tarea. Por ello la pila \emph{FIQ} crecía sin liberarse.
+
+Para solucionar esto, en lugar de poner \emph{vTickISR} como manejador de las interrupciones por tiempo, lo defino como el gestor de las excepciones \emph{FIQ} para que se le llame directamente sin pasar por otra función.
+
+Dado que el guardado y restauración del contexto es el mismo, no hay beneficio temporal en usar \emph{FIQ} frente a \emph{IRQ}. Pero, debido a que \emph{vTickISR} tiene que ejecutarse directamente sin un manejador de por medio, si utilizásemos IRQ monopolizaría este tipo de interrupciones. Así que mientras no tengamos necesidad de utilizar \emph{FIQ} para una aplicación, considero que es mejor dejarlo así.\\
+
+Una vez solucionados los desbordamientos, la demo funciona sin necesidad de ejecutarse con \emph{gdb} y con los \emph{ticks} de FreeRTOS a 100 Hz. Si aumentamos la frecuencia a 1000 Hz falla. Después de ejecutarlo varias veces con el depurador a esta frecuencia, puedo afirmar con bastante confianza que se debe a que está más tiempo gestionando las interrupciones por tiempo que ejecutando tareas. Además, podemos volver a reducir el \emph{configMINIMAL\_STACK\_SIZE} a 128 sin causar desbordamientos y poner \emph{configCHECK\_FOR\_STACK\_OVERFLOW} a 0 ya que no tenemos que preocuparnos por más desbordamientos.
+
+\chapter{Código adjunto}
+\section{Struct para configurar los temporizadores}
+\label{chap:timer}
+\lstset{
+  language=C,                % choose the language of the code
+  numbers=left,                   % where to put the line-numbers
+  stepnumber=1,                   % the step between two line-numbers.        
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  tabsize=4,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=true,         % sets if automatic breaks should only happen at whitespace
+  title=\lstname,                 % show the filename of files included with \lstinputlisting;
+}
+
+\begin{lstlisting}
+struct tmr_regs_t{
+    // Registro de comparacion utilizando cuando cuenta hacia arriba
+    uint16_t COMP1 : 16; // 0x00 | TMRX_MASK
+    // Registro de comparacion utilizando cuando cuenta hacia abajo
+    uint16_t COMP2 : 16; // 0x02 | TMRX_MASK
+    // Registro para guardar el valor actual del contador
+    // 0x80007004
+    uint16_t CAPT : 16; // 0x04 | TMRX_MASK
+    // Registro para inicializar el contador
+    uint16_t LOAD : 16; // 0x06 | TMRX_MASK
+    // Registro que guarda el valor de este contador mientras otros
+    // contadores se estan leyendo
+    uint16_t HOLD : 16; // 0x08 | TMRX_MASK
+    // Registro que cuenta enventos internos y externos
+    uint16_t CNTR : 16; // 0x0A | TMRX_MASK
+
+    // Registros de control, Tabla 12-11 en MC1322xRM.pdf
+    union { // CTRL : 0x0C | TMRX_MASK
+        struct {
+            uint16_t OUTPUT_MODE : 3;
+            uint16_t CO_INIT : 1;
+            uint16_t DIR : 1;
+            uint16_t LENGTH : 1;
+            uint16_t ONCE : 1;
+            uint16_t SECONDARY_CNT_SRC : 2;
+            uint16_t PRIMARY_CNT_SRC : 4;
+            uint16_t COUNT_MODE : 3;
+        };
+        uint16_t CTRL : 16;
+    };
+
+    // Registros de estado y control, Tabla 12-15 en MC1322xRM.pdf
+    union { // SCTRL : 0x0E | TMRX_MASK
+        struct {
+            uint16_t OEN : 1;
+            uint16_t OPS : 1;
+            uint16_t FORCE : 1;
+            uint16_t VAL : 1;
+            uint16_t EEOF : 1;
+            uint16_t MSTR : 1;
+            uint16_t CAPTURE_MODE : 2;
+            uint16_t INPUT : 1;
+            uint16_t IPS : 1;
+            uint16_t IEFIE : 1;
+            uint16_t IEF : 1;
+            uint16_t TOFIE : 1;
+            uint16_t TOF : 1;
+            uint16_t TCFIE : 1;
+            uint16_t TCF : 1;
+        };
+        uint16_t SCTRL : 16;
+    };
+
+    // Registros de carga del comparador, para
+    // cargar en el comparador si se cumple una condicion
+    uint16_t CMPLD1 : 16; // 0x10 | TRMX_MASK
+    uint16_t CMPLD2 : 16; // 0x12 | TRMX_MASK
+
+    // Registros de estado y control de los comparadores
+    union { // CSCTRL : 0x14 | TRMX_MASK
+        struct {
+            uint16_t CL1          : 2;
+            uint16_t CL2          : 2;
+            uint16_t TCF1         : 1;
+            uint16_t TCF2         : 1;
+            uint16_t TCF1_EN      : 1;
+            uint16_t TCF2_EN      : 1;
+            uint16_t /*RESERVED*/ : 5;
+            uint16_t FILT_EN      : 1;
+            uint16_t DBG_EN       : 2;
+        };
+        uint16_t CSCTRL         : 16;
+    };
+    /*PADDING 0x16 -> 0x1e */
+    uint16_t                  : 8;
+    // Regisro de Habilitacion del canales
+    union { // ENBL : 0x1e
+        struct {
+            uint16_t ENBL0        : 1;
+            uint16_t ENBL1        : 1;
+            uint16_t ENBL2        : 1;
+            uint16_t ENBL3        : 1;
+            uint16_t /*RESERVED*/ : 12;
+        };
+        uint16_t ENBL           : 16;
+    };
+
+} ;
+
+static volatile struct tmr_regs_t *const TMR0 = (void *) TMR0_BASE;
+static volatile struct tmr_regs_t *const TMR1 = (void *) TMR1_BASE;
+static volatile struct tmr_regs_t *const TMR2 = (void *) TMR2_BASE;
+static volatile struct tmr_regs_t *const TMR3 = (void *) TMR3_BASE;
+
+\end{lstlisting}

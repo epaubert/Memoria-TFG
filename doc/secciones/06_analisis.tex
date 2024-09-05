@@ -1,10 +1,9 @@
 \chapter{Análisis del problema}
 
-En esta sección justificaré las diferentes decisiones que he tomado durante este proyecto.
+Debido a los requisitos no funcionales, estamos obligados a utilizar tanto FreeRTOS como la Econotag. A pesar de ello, resulta interesante investigar el estado actual del mercado tanto de RTOSs [\ref{Def:RTOS}] como de placas para dar contexto al proyecto. También nos permite comparar nuestra elección con las opciones que nos da el mercado.
 
-\section{Placa}
-
-\begin{table}[h]
+\section{Placas}
+\begin{table}[!ht]
 \centering
 \renewcommand{\arraystretch}{1.2}
 \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|}
@@ -23,29 +22,22 @@ En esta sección justificaré las diferentes decisiones que he tomado durante es
 \label{Tab:placas}
 \end{table}
 
-Si bien es cierto que la placa a elegir está determinada por los requisitos no funcionales, daremos un repaso al mercado actual con objeto de tener algo de contexto.\\
-
 La primera elección que influirá en el resto de decisiones en un proyecto de un sistema empotrado es la placa en la que se desarrollará este proyecto. Hoy en día existen multitud de placas para sistemas embebidos, desde sistemas Arduino que rondan los 20-30€, a FPGAs en el marco de los miles de euros, cada una con sus características.
 
-Al elegir una placa para un sistema empotrado no necesariamente queremos la que tiene mayor capacidad de cómputo, sino una que se ajuste a nuestras necesidades. Una placa más potente necesitará más energía para funcionar, que en caso de que el sistema funcione con una batería, será peor elección que una más eficiente si no necesitamos tanta capacidad de procesamiento. Tecnologías como Bluetooth y Wifi pueden ser muy útiles para algunos proyectos pero, si no vamos a hacer uso de ellas, son componentes que aumentan el precio y el tamaño de la placa innecesariamente.
+Al elegir una placa para un sistema embebido no necesariamente queremos la que tiene mayor capacidad de cómputo, sino una que se ajuste a nuestras necesidades. Una placa más potente necesitará más energía para funcionar, que en caso de que el sistema funcione con una batería, será peor elección que una más eficiente si no necesitamos tanta capacidad de procesamiento. Tecnologías como Bluetooth y Wifi pueden ser muy útiles para algunos proyectos pero, si no vamos a hacer uso de ellas, son componentes que aumentan el precio y el tamaño de la placa innecesariamente.
 
 En la tabla \ref{Tab:placas} he recopilado algunas placas relevantes para este proyecto. He añadido el Arduino Mega y el ESP32 a pesar de no estar basadas en ARM, aunque utilizan arquitecturas basadas en RISC [\ref{Def:RISC}].
 
-% FIXME:
+\subsection{Redwire Econotag r3 en el contexto actual}
+La principal inconveniencia de utilizar esta placa es que está descatalogada. Por suerte, se puede pedir prestada en la biblioteca de la UGR. Al compararla con otras placas actuales, su mayor ventaja es su bajo consumo. Esta ventaja se debe principalmente a que su procesador está muy desactualizado, está basado en una ISA [\ref{Def:ISA}] cuyos primeros procesadores salieron en 1993. Una placa actual con características similares es el Arduino Mega 2560.
 
-% TODO: Podría justificar la elección en que al ser FreeRTOS muy popular ya existen port para la mayoría de estas placas¿?
-
-\subsection{Redbee Econotag r3}
-Dado que este proyecto se plantea como una extensión de la asignatura de Sistemas Empotrados, utilizaremos la Redbee Econotag r3. A pesar de estar descatalogada, está disponible para retirar de la biblioteca de la Universidad de Granada, de forma que no supone un desembolso.
-
-Es un kit de desarrollo para la placa MC13224V con una interfaz JTAG. Esto permite que se pueda desarrollar para esta placa y debugear utilizando OpenOCD y gdb.
+En general, si fuese hoy en día a crear un proyecto de un SE [\ref{Def:SE}], no utilizaría la Econotag. De las placas que he recopilado seguramente utilizaría el Arduino o la ESP32. Pero en este proyecto la Econotag tiene una gran ventaja, y es que no existe un port de FreeRTOS para ella, mientras que si existe para la inmensa mayoría de las placas populares actuales.
 
 \section{Sistemas operativos de Tiempo Real}
 
-Al igual que la elección de la placa, la elección de RTOS viene dada por los requisitos funcionales, pero resulta relevante hacer una recopilación de RTOSs del mercado actual.
+Voy a dividir los RTOSs [\ref{Def:RTOS}] en propietarios y libres ya que la mayoría de ellos son propietarios y quiero destacar los de \emph{software} libre.
 
-% FIXME: 
-\begin{table}[h]
+\begin{table}[!ht]
 \centering
 \renewcommand{\arraystretch}{1.5}
 \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|}
@@ -62,45 +54,66 @@ Al igual que la elección de la placa, la elección de RTOS viene dada por los r
 \end{table}
 
 \subsection{Propietarios}
-Dada la naturaleza de este proyecto vamos a descartar los RTOSs [\ref{Def:RTOS}] propietarios, pero no sin antes hablar un poco de ellos para obtener una idea general del mercado de los RTOSs [\ref{Def:RTOS}].
+Dada la naturaleza de este proyecto en ningún caso podríamos utilizar un RTOS [\ref{Def:RTOS}] propietario. Aun así resulta interesante hablar un poco de ellos para obtener una idea general del mercado de los RTOSs.
 
 \subsubsection{Deos}
-Digital Engeneering Operative System (Deos), desarrollado por DCC-I, es un RTOS [\ref{Def:RTOS}] utilizado en campos como aviación, defensa y aeroespacial. Cumple con las certificación DO-178C para sofware de aviación. Utiliza una arquitectura de microkernel y tiene un alto grado de determinismo. También ofrece protección y particionamiento de memoria para mejorar la seguridad.
+Digital Engeneering Operative System (Deos), desarrollado por DCC-I, es un RTOS utilizado en campos como aviación, defensa y aeroespacial. Cumple con las certificación DO-178C para sofware de aviación. Utiliza una arquitectura de microkérnel y tiene un alto grado de determinismo. También ofrece protección y particionamiento de memoria para mejorar la seguridad.
 
 Posee un entorno de desarrollo integrado (IDE), soporte para actualizaciones en caliente y soporte a largo plazo. El precio no es público ya que depende de la aplicación y de los módulos que se vayan a utilizar.
 
 \subsubsection{embOS}
-Desarrollado por SEGGER, es un RTOS [\ref{Def:RTOS}] orientado a sistemas embebidos [\ref{Def:SE}] con los estándares de seguridad IEC 61508 SIL 3, IEC 62304 Class C (equipamiento médico), y ISO 26262 ASIL D (automovilismo).
+Desarrollado por SEGGER, es un RTOS orientado a sistemas embebidos [\ref{Def:SE}] con los estándares de seguridad IEC 61508 SIL 3, IEC 62304 Class C (equipamiento médico), y ISO 26262 ASIL D (automovilismo).
 
 Gratis para educación y evaluación, de pago para uso comercial.
 
 \subsubsection{INTEGRITY}
-Desarrollado por Green Hills Software, es un RTOS con certificado POSIX. Soporta múltiples arquitecturas, entre ellas ARM, x86, PowerPC y MIPS.
+Desarrollado por Green Hills \emph{software}, es un RTOS con certificado POSIX. Soporta múltiples arquitecturas, entre ellas ARM, x86, PowerPC y MIPS.
 
-En su versión INTEGRITY-178B, certificada para software aeronáutico, se usa en varios aviones militares y en el avión comercial A380 de Airbus.
+En su versión INTEGRITY-178B, certificada para \emph{software} aeronáutico, se usa en varios aviones militares y en el avión comercial A380 de Airbus.
 
 %TODO:
-(Insertar imángen del A380)
+% (Insertar imángen del A380)
 
 \subsubsection{Keil RTX}
 Desarrollado por Keil, una subsidiaria de ARM (la empresa), para procesadores ARM [\ref{Def:ARM}] (la arquitectura) y Cortex-M. Esto hace que esté especialmente optimizado para estas arquitecturas. Está integrado en el Keil MDK (Microcontroller Development Kit), por lo que es gratis para usos no comerciales.
 
 \subsection{Libres}
 \subsubsection{FreeRTOS}
-Desarrollado desde 2003 por Richard Barry, que se unió a Amazon en 2017, haciendo que FreeRTOS pasase a ser parte del software desarrollado por AWS y cambiando de una licencia GPLv2 modificada a MIT.
+Desarrollado desde 2003 por Richard Barry, que se unió a Amazon en 2017, haciendo que FreeRTOS pasase a ser parte del \emph{software} desarrollado por AWS y cambiando de una licencia GPLv2 modificada a MIT.
 
-Es de los RTOS más utilizados si no el que más (los datos no son concluyentes) en el contexto de los sistemas empotrados. Al ser de código abierto y tener más de 20 años de desarrollo la comunidad al rededeor de este sistema operativo es enorme y soporta una gran cantidad de arquitecturas.
+Es de los RTOS más utilizados si no el que más (los datos no son concluyentes) en el contexto de los sistemas empotrados. Al ser de código abierto y tener más de 20 años de desarrollo la comunidad alrededor de este sistema operativo es enorme y soporta una gran cantidad de arquitecturas.
 
 %TODO:
-\textbf{OpenRTOS} y \textbf{SafeRTOS} son versiones comerciales de FreeRTOS distribuidas por WITTENSTEIN high integrity systems
+\textbf{OpenRTOS} y \textbf{SafeRTOS} son versiones comerciales de FreeRTOS distribuidas por WITTENSTEIN high integrity systems.
 
 \subsubsection{RTIC}
 Son las siglas de \emph{Real-Time Interrupt-driven Concurrency}. Es un proyecto escrito en el lenguaje de programación Rust que utiliza las fortalezas de este lenguaje en el contexto de los sistemas de tiempo real.
 
-En la documentación \cite{RTIC} se comenta que definirlo como un RTOS [\ref{Def:RTOS}] depende de los antecedentes y la perspectiva y el de cada uno. Para los desarrolladores es un RTOS que en lugar de utilizar un gestor de tareas por software utiliza hardware específico (NVIC en procesadores Cortex-M, CLIC en procesadores RISC-V...) para la planificación de tareas.
+En la documentación \cite{RTIC} se comenta que definirlo como un RTOS [\ref{Def:RTOS}] depende de los antecedentes y la perspectiva y el de cada uno. Para los desarrolladores es un RTOS que en lugar de utilizar un gestor de tareas por \emph{software} utiliza \emph{hardware} específico (NVIC en procesadores Cortex-M, CLIC en procesadores RISC-V...) para la planificación de tareas.
 
-\subsection{Elección}
-FreeRTOS
+\subsection{FreeRTOS en el contexto actual}
+FreeRTOS es uno de los RTOS más populares actualmente, y por buenas razones. Tiene una enorme comunidad detrás además del apoyo económico de AWS. Aunque no estuviese impuesto por los requisitos del proyecto, sería la opción que utilizaría si quisiese crear un proyecto que necesitase de tiempo real.
+
+\section{Cadena de herramientas o \emph{toolchain}}
+La primera elección real que realicé fue la de las herramientas de compilación. Dado que este proyecto se realiza desde un PC con Linux como sistema operativo, el compilador por defecto creará un binario incompatible con la Econotag. Necesito una \emph{toolchain} o cadena de herramientas que me permita compilar desde mi ordenador con la Econotag como objetivo.
+
+% Las \emph{toolchain} se identifican con una tripleta de destino del tipo [ARQUITECTURA]-[FABRICANTE]-[SISTEMA OPERATIVO]. A pesar de llamarse tripleta o \emph{target triplet} en inglés, puede tener entre dos y cuatro campos. Esto se debe a que el fabricante muchas veces se omite y que el sistema operativo puede dividirse en dos para especificar una ABI.\\
+%
+% Resulta relevante explicar el concepto de \Def{ABI}. Una \emph{Aplication Binary Interface} define como interactuarán distinos binarios a nivel de código máquina. Se basa en una ISA [\ref{Def:ISA}] y define, los tipos y tamaños básicos, el alineamiento de la memoria y las convenciones de llamada entre otras cosas.
+% Por ejemplo si, desde un programa queremos llamar a una librería o hacer una llamada al sistema, lo haremos según una ABI.\\
+
+En este caso vamos a compilar para ARM, sin tener un sistema operativo de base y para un sistema embebido. Existen distintas \emph{toolchain} con estas capacidades.
+
+\subsection{GCC: arm-none-eabi}
+La colección de compiladores de GNU o \emph{gcc}, cuenta paquetes opcionales que cuentan con esta capacidad. Además \emph{software} libre y de código abierto, es de las \emph{toolchain} más populares tanto para entornos profesionales como proyectos personales.
+
+\subsection{Keil}
+Keil, como subsidiara de ARM, ofrece una \emph{toolchain} para compilar para sus procesadores. Ofrece \emph{plugins} para Visual Studio Code además de un IDE propio. La versión compatible a ARM7 requiere la licencia comercial que se sale completamente del presupuesto de este proyecto, por lo que queda descartada.
+
+\subsection{IAR}
+Ofrece un IDE además de la \emph{toolchain}. Es propietaria y con un coste de licencia similar al de Keil.Tiene una versión de prueba de 14 días que no es suficiente para este proyecto.\\
+
+Existen otras alternativas como Linaro, que ofrece una versión modificada de \emph{gcc} que produce código más optimizado, o Crosstool-NG, un generador de \emph{toolchains}. Pero la decisión final es utilizar la cadena de herramientas \emph{arm-none-eabi} de GNU. Es muy popular, libre y de código abierto, además de que estoy muy familiarizado con el.
 
 % Pequeña sección sobre esto, pero corta sección sobre esto, pero corta
 % PROBABLEMENTE ELIMINADA
